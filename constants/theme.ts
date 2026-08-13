@@ -62,5 +62,10 @@ export const Spacing = {
   six: 64,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
+/**
+ * Clearance screens must reserve above the floating `SlidingTabBar` (`components/sliding-tab-bar.tsx`),
+ * which renders identically on iOS/Android — so this isn't platform-specific like a native tab bar
+ * height would be. Safe-area insets are handled separately by each screen's `SafeAreaView`.
+ */
+export const BottomTabInset = 88;
 export const MaxContentWidth = 800;

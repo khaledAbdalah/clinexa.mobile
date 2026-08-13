@@ -22,7 +22,9 @@ Package manager is **pnpm** (see `pnpm-lock.yaml` / `pnpm-workspace.yaml`).
 
 File-based routing via **Expo Router**, router root is the top-level `app/`. `experiments.typedRoutes` and `experiments.reactCompiler` are enabled in `app.json`.
 
-Navigation shell: `app/_layout.tsx` wraps the app in `ThemeProvider` (light/dark from `useColorScheme`), waits on `useLoadFonts()` before hiding the splash screen, and renders `AppTabs` (`components/app-tabs.tsx`, with a `.web.tsx` platform variant) inside an `ErrorBoundary`. Portal host and toast renderer are mounted at this top level.
+Navigation shell: `app/_layout.tsx` wraps the app in `ThemeProvider` (light/dark from `useColorScheme`), waits on `useLoadFonts()` before hiding the splash screen, and renders a root `<Stack>` inside an `ErrorBoundary`. Portal host and toast renderer are mounted at this top level.
+
+Bottom tabs live in the `app/(tabs)/` route group. `app/(tabs)/_layout.tsx` renders `expo-router/js-tabs`'s `Tabs` with a fully custom `tabBar` — `components/sliding-tab-bar.tsx`, a floating rounded pill with an animated sliding highlight (ported from the `lms` sibling project's `SlidingTabBar`, adapted to this app's theme tokens and RTL via `I18nManager.isRTL`). This replaced an earlier `NativeTabs` (`expo-router/unstable-native-tabs`) setup — screens reserve bottom clearance for it via `BottomTabInset` in `constants/theme.ts`, which is no longer platform-specific since the custom bar renders identically on iOS/Android.
 
 ### Styling: NativeWind v5 + react-native-css
 

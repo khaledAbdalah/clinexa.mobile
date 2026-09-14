@@ -1,15 +1,20 @@
 import { Image } from 'expo-image';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 const DURATION = 600;
 
+// Matches assets/images/splash-pattern.png's aspect ratio (1536×1024), so the
+// wave graphic scales to the screen width without distortion.
+const PATTERN_ASPECT_RATIO = 1536 / 1024;
+
 export function AnimatedSplashOverlay() {
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(true);
+  const { width: screenWidth } = useWindowDimensions();
 
   if (!visible) return null;
 
@@ -32,7 +37,20 @@ export function AnimatedSplashOverlay() {
     },
   });
 
-  const image = <Image style={styles.image} source={require('@/assets/images/splash-icon.png')} />;
+  const content = (
+    <>
+      <View style={styles.content}>
+        <Image style={styles.logo} source={require('@/assets/images/splash-icon.png')} />
+        <Text style={styles.title}>Clinexa</Text>
+        <Text style={styles.tagline}>عيادتك في جيبك</Text>
+      </View>
+      <Image
+        style={[styles.pattern, { width: screenWidth, height: screenWidth / PATTERN_ASPECT_RATIO }]}
+        source={require('@/assets/images/splash-pattern.png')}
+        contentFit="contain"
+      />
+    </>
+  );
 
   return animate ? (
     <Animated.View
@@ -42,8 +60,9 @@ export function AnimatedSplashOverlay() {
           scheduleOnRN(setVisible, false);
         }
       })}
-      style={styles.splashOverlay}>
-      {image}
+      style={styles.splashOverlay}
+    >
+      {content}
     </Animated.View>
   ) : (
     <View
@@ -52,8 +71,9 @@ export function AnimatedSplashOverlay() {
           setAnimate(true);
         });
       }}
-      style={styles.splashOverlay}>
-      {image}
+      style={styles.splashOverlay}
+    >
+      {content}
     </View>
   );
 }
@@ -66,8 +86,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1000,
   },
-  image: {
-    width: 180,
-    height: 180,
+  content: {
+    alignItems: 'center',
+    paddingBottom: '20%',
+  },
+  logo: {
+    width: 110,
+    height: 110,
+  },
+  title: {
+    marginTop: 16,
+    fontFamily: 'app-font-bold',
+    fontSize: 26,
+    color: '#0F172A',
+  },
+  tagline: {
+    marginTop: 6,
+    fontFamily: 'app-font-regular',
+    fontSize: 14,
+    color: '#64748B',
+  },
+  pattern: {
+    position: 'absolute',
+    bottom: 0,
   },
 });

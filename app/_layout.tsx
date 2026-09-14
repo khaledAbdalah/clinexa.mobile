@@ -3,6 +3,7 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
@@ -27,13 +28,15 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <ErrorBoundary>
-        <Stack screenOptions={{ headerShown: false }} />
-      </ErrorBoundary>
-      <PortalHost />
-      <Toast config={toastConfig} />
-    </ThemeProvider>
+    <KeyboardProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AnimatedSplashOverlay />
+        <ErrorBoundary>
+          <Stack screenOptions={{ headerShown: false }} />
+        </ErrorBoundary>
+        <PortalHost />
+        <Toast config={toastConfig} />
+      </ThemeProvider>
+    </KeyboardProvider>
   );
 }

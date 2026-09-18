@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Clinexa",
+    "slug": "clinexa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "clinexa",
     "userInterfaceStyle": "light",
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.lmspro.mobile"
+      "package": "com.clinexa.mobile"
     },
     "plugins": [
       "expo-router",
@@ -20,14 +20,24 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#FFFFFF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 180
+          "image": "./assets/images/icon.png",
+          "imageWidth": 220
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "enforceContrast": false,
+          "hidden": true
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "ios": {
+      "bundleIdentifier": "com.clinexa.mobile"
     }
   }
 }

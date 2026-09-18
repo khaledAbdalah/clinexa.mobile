@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "clinexa-mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
@@ -42,6 +42,7 @@
     "expo-haptics": "~57.0.1",
     "expo-image": "~57.0.2",
     "expo-linking": "~57.0.5",
+    "expo-navigation-bar": "~57.0.2",
     "expo-notifications": "~57.0.10",
     "expo-router": "~57.0.12",
     "expo-secure-store": "~57.0.1",

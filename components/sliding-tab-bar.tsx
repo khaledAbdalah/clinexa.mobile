@@ -17,12 +17,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/theme';
 
 const TAB_ICONS: Record<string, LucideIcon> = {
-  index: Home,
+  home: Home,
   explore: Compass,
 };
 
 const TAB_LABELS: Record<string, string> = {
-  index: 'الرئيسية',
+  home: 'الرئيسية',
   explore: 'استكشاف',
 };
 

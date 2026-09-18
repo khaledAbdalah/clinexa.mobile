@@ -1,0 +1,51 @@
+diff --git a/dist/commonjs/native/styles/index.js b/dist/commonjs/native/styles/index.js
+index 222296d6bd95a69dd87af100d8387753c54d2095..f5d7d2570bfc5879f2c8c31b7ed8b33c684c71ad 100644
+--- a/dist/commonjs/native/styles/index.js
++++ b/dist/commonjs/native/styles/index.js
+@@ -373,7 +373,11 @@ function nativeStyleMapping(config, props) {
+       continue;
+     }
+     let target = props;
+-    const tokens = path.split(".");
++    // PATCH (react-native-css#348 / PR #323): `nativeStyleMapping` values may be the
++    // boolean `true`, meaning "map to the prop of the same name". Upstream 3.0.7 calls
++    // .split() on it unconditionally, which throws for TextInput (`textAlign: true`)
++    // and ImageBackground (`backgroundColor: true`).
++    const tokens = (typeof path === "string" ? path : key).split(".");
+     const lastToken = tokens.pop();
+     for (const token of tokens) {
+       target[token] ??= {};
+diff --git a/dist/module/native/styles/index.js b/dist/module/native/styles/index.js
+index 067f8edb6459cf6b15258df079c541746f233af5..991c59cc4e35b7e13af69c0cdcb18aba55216ecf 100644
+--- a/dist/module/native/styles/index.js
++++ b/dist/module/native/styles/index.js
+@@ -369,7 +369,11 @@ function nativeStyleMapping(config, props) {
+       continue;
+     }
+     let target = props;
+-    const tokens = path.split(".");
++    // PATCH (react-native-css#348 / PR #323): `nativeStyleMapping` values may be the
++    // boolean `true`, meaning "map to the prop of the same name". Upstream 3.0.7 calls
++    // .split() on it unconditionally, which throws for TextInput (`textAlign: true`)
++    // and ImageBackground (`backgroundColor: true`).
++    const tokens = (typeof path === "string" ? path : key).split(".");
+     const lastToken = tokens.pop();
+     for (const token of tokens) {
+       target[token] ??= {};
+diff --git a/src/native/styles/index.ts b/src/native/styles/index.ts
+index 9ac5cc4d7c532cd9f6686d4b9d5909d5a76e8aab..ae08b64b687dfa2ae8f76beee490ce37ee937625 100644
+--- a/src/native/styles/index.ts
++++ b/src/native/styles/index.ts
+@@ -504,7 +504,11 @@ function nativeStyleMapping(
+     }
+ 
+     let target = props;
+-    const tokens = path.split(".");
++    // PATCH (react-native-css#348 / PR #323): `nativeStyleMapping` values may be the
++    // boolean `true`, meaning "map to the prop of the same name". Upstream 3.0.7 calls
++    // .split() on it unconditionally, which throws for TextInput (`textAlign: true`)
++    // and ImageBackground (`backgroundColor: true`).
++    const tokens = (typeof path === "string" ? path : key).split(".");
+     const lastToken = tokens.pop();
+     for (const token of tokens) {
+       target[token] ??= {};

@@ -1,13 +1,14 @@
 import { PortalHost } from '@rn-primitives/portal';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { ErrorBoundary } from '@/components/other/error-boundary';
+import { SplashOverlay } from '@/components/other/splash-overlay';
 import { toastConfig } from '@/config/toast';
 import { useLoadFonts } from '@/hooks/use-load-fonts';
 
@@ -17,26 +18,23 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const fontsLoaded = useLoadFonts();
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
   if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <KeyboardProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AnimatedSplashOverlay />
-        <ErrorBoundary>
-          <Stack screenOptions={{ headerShown: false }} />
-        </ErrorBoundary>
-        <PortalHost />
-        <Toast config={toastConfig} />
-      </ThemeProvider>
-    </KeyboardProvider>
+    <SafeAreaProvider>
+      <KeyboardProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <StatusBar hidden />
+          <ErrorBoundary>
+            <Stack screenOptions={{ headerShown: false }} />
+          </ErrorBoundary>
+          <PortalHost />
+          <Toast config={toastConfig} />
+          <SplashOverlay isAppReady={fontsLoaded} />
+        </ThemeProvider>
+      </KeyboardProvider>
+    </SafeAreaProvider>
   );
 }

@@ -24,5 +24,6 @@ export const endpoints = {
     markAllRead: '/notifications/mark-all-read',
     delete: (id: string) => `/notifications/${id}`,
   },
+  settings: '/settings',
   checkAuth: '/check-auth',
 };

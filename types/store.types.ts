@@ -21,3 +21,26 @@ export interface PushTokenState {
   /** Drops the locally-remembered token without calling the backend. */
   clearLocal: () => void;
 }
+
+// Settings Store
+export type SettingType = 'BOOLEAN' | 'TEXT' | 'LONG_TEXT' | 'JSON';
+
+export interface Setting {
+  id: string;
+  title: string;
+  key: string;
+  group: string;
+  type: SettingType;
+  value: string | boolean | string[] | null;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
+export interface SettingsState {
+  settings: Record<string, string | boolean | string[] | null>;
+  loading: boolean;
+  get: (key: string) => string | boolean | string[] | null | undefined;
+  /** A setting is considered enabled unless its value is explicitly `false`. */
+  isEnabled: (key: string) => boolean;
+  fetchSettings: () => Promise<void>;
+}

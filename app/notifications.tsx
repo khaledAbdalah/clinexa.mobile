@@ -9,8 +9,10 @@ import { TabHeader } from '@/components/shared/tab-header';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useNotificationsPage } from '@/hooks/notifications/use-notifications-page';
+import { useRequireAuth } from '@/hooks/use-require-auth';
 
 export default function NotificationsScreen() {
+  useRequireAuth();
   const insets = useSafeAreaInsets();
   const {
     status,

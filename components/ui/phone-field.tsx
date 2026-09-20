@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { View, type TextInputProps } from 'react-native';
 
+import { cn } from '@/lib/utils';
 import { FieldLabel, FieldRow } from '@/components/form-field';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -11,6 +12,7 @@ type PhoneFieldProps = Omit<TextInputProps, 'keyboardType'> & {
   label?: string;
   required?: boolean;
   hint?: ReactNode;
+  errorMessage?: string;
 };
 
 /**
@@ -23,6 +25,7 @@ export function PhoneField({
   label = 'رقم الهاتف',
   required = true,
   hint,
+  errorMessage,
   placeholder = 'أدخل رقم هاتفك',
   autoComplete = 'tel',
   ...inputProps
@@ -30,7 +33,7 @@ export function PhoneField({
   return (
     <View className="gap-2">
       <FieldLabel label={label} required={required} />
-      <FieldRow style={{ direction: 'ltr' }}>
+      <FieldRow style={{ direction: 'ltr' }} className={cn(errorMessage && 'border-destructive')}>
         <Text className="text-foreground py-3 text-lg" style={{ fontFamily: 'app-font-semibold' }}>
           {COUNTRY_CODE}
         </Text>
@@ -44,7 +47,13 @@ export function PhoneField({
           {...inputProps}
         />
       </FieldRow>
-      {hint}
+      {errorMessage ? (
+        <Text className="text-destructive text-xs" style={{ fontFamily: 'app-font-regular' }}>
+          {errorMessage}
+        </Text>
+      ) : (
+        hint
+      )}
     </View>
   );
 }

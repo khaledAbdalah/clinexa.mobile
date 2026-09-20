@@ -6,9 +6,9 @@ export interface Patient {
   dateOfBirth: string | null;
   gender: Gender;
   address: string | null;
-  allergies: string[] | null;
-  chronicConditions: string[] | null;
-  currentMedications: string[] | null;
+  allergies: string | null;
+  chronicConditions: string | null;
+  currentMedications: string | null;
   bloodType: string | null;
   notes: string | null;
   createdAt: string;
@@ -21,9 +21,9 @@ export interface CompleteOnboardingRequest {
   dateOfBirth?: string;
   gender: Gender;
   address?: string;
-  allergies?: string[];
-  chronicConditions?: string[];
-  currentMedications?: string[];
+  allergies?: string;
+  chronicConditions?: string;
+  currentMedications?: string;
   bloodType?: string;
   notes?: string;
 }

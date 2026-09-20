@@ -3,20 +3,24 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { Pressable, View, type TextInputProps } from 'react-native';
 
+import { cn } from '@/lib/utils';
 import { FieldLabel, FieldRow } from '@/components/form-field';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
+import { Text } from '@/components/ui/text';
 
 type PasswordFieldProps = Omit<TextInputProps, 'secureTextEntry'> & {
   label?: string;
   required?: boolean;
   hint?: ReactNode;
+  errorMessage?: string;
 };
 
 export function PasswordField({
   label = 'كلمة المرور',
   required = true,
   hint,
+  errorMessage,
   placeholder = 'أدخل كلمة المرور',
   autoComplete = 'password',
   ...inputProps
@@ -26,7 +30,7 @@ export function PasswordField({
   return (
     <View className="gap-2">
       <FieldLabel label={label} required={required} />
-      <FieldRow>
+      <FieldRow className={cn(errorMessage && 'border-destructive')}>
         <Input
           className="text-foreground h-14 flex-1 border-0 bg-transparent text-right text-lg leading-7 shadow-none"
           placeholder={placeholder}
@@ -38,7 +42,13 @@ export function PasswordField({
           <Icon as={visible ? Eye : EyeOff} size={18} className="text-muted-foreground" />
         </Pressable>
       </FieldRow>
-      {hint}
+      {errorMessage ? (
+        <Text className="text-destructive text-xs" style={{ fontFamily: 'app-font-regular' }}>
+          {errorMessage}
+        </Text>
+      ) : (
+        hint
+      )}
     </View>
   );
 }

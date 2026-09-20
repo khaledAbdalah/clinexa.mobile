@@ -1,8 +1,11 @@
 import { Tabs } from 'expo-router/js-tabs';
 
 import { SlidingTabBar } from '@/components/sliding-tab-bar';
+import { useRequireAuth } from '@/hooks/use-require-auth';
 
 export default function TabLayout() {
+  useRequireAuth();
+
   return (
     <Tabs tabBar={(props) => <SlidingTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="home" />

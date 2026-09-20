@@ -1,6 +1,6 @@
 import { type BottomTabBarProps } from 'expo-router/js-tabs';
 import * as Haptics from 'expo-haptics';
-import { Compass, Home, type LucideIcon } from 'lucide-react-native';
+import { Calendar, Home, Pill, Receipt, type LucideIcon } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -18,12 +18,16 @@ import { Colors } from '@/constants/theme';
 
 const TAB_ICONS: Record<string, LucideIcon> = {
   home: Home,
-  explore: Compass,
+  appointments: Calendar,
+  prescriptions: Pill,
+  invoices: Receipt,
 };
 
 const TAB_LABELS: Record<string, string> = {
   home: 'الرئيسية',
-  explore: 'استكشاف',
+  appointments: 'مواعيدي',
+  prescriptions: 'روشتاتي',
+  invoices: 'فواتيري',
 };
 
 const SLIDER_GAP = 8; // horizontal breathing room around the highlight

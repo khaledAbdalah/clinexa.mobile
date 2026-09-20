@@ -14,6 +14,6 @@ export const routes = {
   tabsAppointments: '/appointments',
   tabsPrescriptions: '/prescriptions',
   tabsInvoices: '/invoices',
-  tabsUpdates: '/updates',
+  notifications: '/notifications',
   medicalTimeline: '/medical-timeline',
 } as const;

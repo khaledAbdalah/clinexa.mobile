@@ -20,6 +20,7 @@ const api = create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
     'x-platform': 'MOBILE',
+    'x-tenant-slug': process.env.EXPO_PUBLIC_TENANT_SLUG,
   },
 });
 

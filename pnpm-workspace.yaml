@@ -1,6 +1,9 @@
 allowBuilds:
   unrs-resolver: true
 
+minimumReleaseAgeExclude:
+  - expo-updates@57.0.23
+
 overrides:
   lightningcss: '1.30.1'
 

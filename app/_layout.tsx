@@ -11,6 +11,7 @@ import { ErrorBoundary } from '@/components/other/error-boundary';
 import { ForceUpdateScreen } from '@/components/other/force-update-screen';
 import { MaintenanceScreen } from '@/components/other/maintenance-screen';
 import { SplashOverlay } from '@/components/other/splash-overlay';
+import { QueryProvider } from '@/config/react-query';
 import { toastConfig } from '@/config/toast';
 import { SettingKeys } from '@/constants/settings.constant';
 import { useAppBootstrap } from '@/hooks/use-app-bootstrap';
@@ -34,25 +35,27 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <KeyboardProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <StatusBar hidden />
-          <ErrorBoundary>
-            {isReady ? (
-              isMaintenanceMode ? (
-                <MaintenanceScreen />
-              ) : isForceUpdateRequired ? (
-                <ForceUpdateScreen storeUrl={storeUrl} />
-              ) : (
-                <Stack screenOptions={{ headerShown: false }} />
-              )
-            ) : null}
-          </ErrorBoundary>
-          <PortalHost />
-          <Toast config={toastConfig} />
-          <SplashOverlay isAppReady={isAppReady} />
-        </ThemeProvider>
-      </KeyboardProvider>
+      <QueryProvider>
+        <KeyboardProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <StatusBar hidden />
+            <ErrorBoundary>
+              {isReady ? (
+                isMaintenanceMode ? (
+                  <MaintenanceScreen />
+                ) : isForceUpdateRequired ? (
+                  <ForceUpdateScreen storeUrl={storeUrl} />
+                ) : (
+                  <Stack screenOptions={{ headerShown: false }} />
+                )
+              ) : null}
+            </ErrorBoundary>
+            <PortalHost />
+            <Toast config={toastConfig} />
+            <SplashOverlay isAppReady={isAppReady} />
+          </ThemeProvider>
+        </KeyboardProvider>
+      </QueryProvider>
     </SafeAreaProvider>
   );
 }

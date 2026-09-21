@@ -50,7 +50,7 @@ export default function NotificationsScreen() {
       onRefresh={onRefresh}
       ListHeaderComponent={
         <>
-          <TabHeader title="المحدثات" />
+          <TabHeader title="الإشعارات" />
 
           <View className="h-2" />
           <NotificationStatusChips active={status} onChange={setStatus} unreadCount={unreadCount} />
@@ -81,7 +81,7 @@ export default function NotificationsScreen() {
               className="text-muted-foreground text-center text-sm"
               style={{ fontFamily: 'app-font-regular' }}
             >
-              لا توجد محدثات حتى الآن
+              لا توجد إشعارات حتى الآن
             </Text>
           </View>
         )

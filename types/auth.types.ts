@@ -3,6 +3,8 @@ export interface User {
   fullName: string;
   phone: string;
   initials: string;
+  isPhoneVerified: boolean;
+  isOnboardingComplete: boolean;
   createdAt: string;
   updatedAt: string | null;
 }

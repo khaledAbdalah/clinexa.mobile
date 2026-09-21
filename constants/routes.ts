@@ -1,5 +1,6 @@
 export const routes = {
   home: '/',
+  welcome: '/welcome',
   intro: '/intro',
   login: '/login',
   register: '/register',
@@ -8,6 +9,7 @@ export const routes = {
   otpVerification: '/otp-verification',
   onboardingPersonalDetails: '/onboarding-personal-details',
   onboardingMedicalInfo: '/onboarding-medical-info',
+  onboardingMedicalHistory: '/onboarding-medical-history',
   onboardingConfirmation: '/onboarding-confirmation',
   onboardingComplete: '/onboarding-complete',
   tabsHome: '/home',
@@ -16,4 +18,5 @@ export const routes = {
   tabsInvoices: '/invoices',
   notifications: '/notifications',
   medicalTimeline: '/medical-timeline',
+  profile: '/profile',
 } as const;

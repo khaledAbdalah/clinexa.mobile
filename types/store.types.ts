@@ -1,15 +1,25 @@
 import type { User } from './auth.types';
 
 // Auth Store
+
+/**
+ * Where an authenticated user stands relative to the signup → verify →
+ * onboard funnel. `null` while this hasn't been resolved yet (or resolution
+ * failed) — callers should treat that the same as 'ready' to avoid trapping
+ * a legitimately authenticated user behind a network blip.
+ */
+export type AuthStatus = 'needs_verification' | 'needs_onboarding' | 'ready';
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  status: AuthStatus | null;
 
   // Actions
   logout: () => Promise<void>;
   forceLogout: () => Promise<void>;
   checkAuth: () => Promise<void>;
-  setUser: (user: User) => void;
+  setUser: (user: User) => Promise<void>;
 }
 
 // Push Token Store

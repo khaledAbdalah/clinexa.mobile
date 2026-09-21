@@ -5,15 +5,27 @@ import { queryClient } from '@/config/react-query';
 import { SecureStorage } from '@/config/secure-storage';
 import { usePushTokenStore } from '@/store/push-token';
 import { useToast } from '@/hooks/use-toast';
-import type { AuthState } from '@/types/store.types';
+import type { AuthState, AuthStatus } from '@/types/store.types';
 import type { User } from '@/types/auth.types';
+
+// Both flags come straight off the User payload every auth response already
+// returns — no second request needed (there used to be one, inferring
+// onboarding completion from a 404 on /patient/profile; that raced the app's
+// bootstrap timeout on a slow connection, occasionally landing on the tab
+// bar before the second call had resolved).
+function resolveAuthStatus(user: User): AuthStatus {
+  if (!user.isPhoneVerified) return 'needs_verification';
+  if (!user.isOnboardingComplete) return 'needs_onboarding';
+  return 'ready';
+}
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
+  status: null,
 
-  setUser: (user) => {
-    set({ user, isAuthenticated: true });
+  setUser: async (user) => {
+    set({ user, isAuthenticated: true, status: resolveAuthStatus(user) });
     // Refetch everything currently mounted so screens picked up while browsing
     // as a guest (or as a previous account) reflect this user's data.
     queryClient.invalidateQueries();
@@ -31,7 +43,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       console.error('Logout error:', error);
     } finally {
       await SecureStorage.clearTokens();
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, status: null });
       // Drop cached server state (patients, appointments, ...) so the next
       // account to sign in on this device never sees data left over from this session.
       queryClient.clear();
@@ -50,7 +62,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // just drop the local record (mirrors why /auth/logout is skipped above).
     usePushTokenStore.getState().clearLocal();
     await SecureStorage.clearTokens();
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, isAuthenticated: false, status: null });
     queryClient.clear();
   },
 
@@ -58,16 +70,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await SecureStorage.getAccessToken();
       if (!token) {
-        set({ isAuthenticated: false, user: null });
+        set({ isAuthenticated: false, user: null, status: null });
         return;
       }
 
       const res = await api.get<{ data: User }>(endpoints.account.profile);
-      set({ user: res.data.data, isAuthenticated: true });
+      const user = res.data.data;
+      set({ user, isAuthenticated: true, status: resolveAuthStatus(user) });
     } catch (error) {
       console.error('Auth check failed:', error);
       await SecureStorage.clearTokens();
-      set({ isAuthenticated: false, user: null });
+      set({ isAuthenticated: false, user: null, status: null });
     }
   },
 }));

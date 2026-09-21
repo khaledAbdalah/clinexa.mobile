@@ -17,7 +17,7 @@ export function useRequireAuth() {
   useFocusEffect(
     useCallback(() => {
       if (!isAuthenticated) {
-        router.replace(routes.home);
+        router.replace(routes.welcome);
       }
     }, [isAuthenticated, router])
   );

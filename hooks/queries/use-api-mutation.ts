@@ -23,12 +23,13 @@ export function useApiMutation<TData, TVariables, TContext = unknown>(
   return useMutation<TData, AxiosError<ApiError>, TVariables, TContext>({
     mutationFn,
     onMutate,
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       invalidateQueryKeys?.forEach((key) => queryClient.invalidateQueries({ queryKey: key }));
       if (successMessage) {
         showSuccess(successMessage);
       }
-      onSuccess?.(data, variables);
+
+      await onSuccess?.(data, variables);
     },
     onError: (error, variables, context) => {
       const validationErrors = error.response?.data?.errors;

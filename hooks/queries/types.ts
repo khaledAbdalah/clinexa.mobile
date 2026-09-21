@@ -33,7 +33,7 @@ export interface UseApiMutationOptions<TData, TVariables, TContext = unknown> {
   invalidateQueryKeys?: QueryKey[];
   /** Runs before the request fires — apply an optimistic update here and return a snapshot for rollback. */
   onMutate?: (variables: TVariables) => TContext | Promise<TContext>;
-  onSuccess?: (data: TData, variables: TVariables) => void;
+  onSuccess?: (data: TData, variables: TVariables) => void | Promise<void>;
   /** `context` is whatever `onMutate` returned — use it to roll back the optimistic update. */
   onError?: (
     error: AxiosError<ApiError>,

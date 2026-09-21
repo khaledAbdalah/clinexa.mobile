@@ -13,6 +13,7 @@ type PhoneFieldProps = Omit<TextInputProps, 'keyboardType'> & {
   required?: boolean;
   hint?: ReactNode;
   errorMessage?: string;
+  showCountryCode?: boolean;
 };
 
 /**
@@ -26,6 +27,7 @@ export function PhoneField({
   required = true,
   hint,
   errorMessage,
+  showCountryCode = true,
   placeholder = 'أدخل رقم هاتفك',
   autoComplete = 'tel',
   ...inputProps
@@ -34,10 +36,17 @@ export function PhoneField({
     <View className="gap-2">
       <FieldLabel label={label} required={required} />
       <FieldRow style={{ direction: 'ltr' }} className={cn(errorMessage && 'border-destructive')}>
-        <Text className="text-foreground py-3 text-lg" style={{ fontFamily: 'app-font-semibold' }}>
-          {COUNTRY_CODE}
-        </Text>
-        <View className="bg-border mx-2 h-5 w-px" />
+        {showCountryCode && (
+          <>
+            <Text
+              className="text-foreground py-3 text-lg"
+              style={{ fontFamily: 'app-font-semibold' }}
+            >
+              {COUNTRY_CODE}
+            </Text>
+            <View className="bg-border mx-2 h-5 w-px" />
+          </>
+        )}
         <Input
           className="text-foreground h-14 flex-1 border-0 bg-transparent text-left text-lg leading-7 shadow-none"
           style={{ writingDirection: 'ltr' }}

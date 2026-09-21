@@ -2,7 +2,7 @@ import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import type { LucideIcon, LucideProps } from 'lucide-react-native';
 import * as React from 'react';
-import { useCssElement } from 'react-native-css';
+import { cssInterop } from 'nativewind';
 import { StyleSheet } from 'react-native';
 
 type IconProps = LucideProps & {
@@ -12,16 +12,14 @@ type IconProps = LucideProps & {
 type FlattenedIconStyle = { color?: string; width?: number; height?: number };
 
 function RawIconImpl({ as: IconComponent, ...props }: IconProps) {
-  // react-native-css resolves `className` to a `style` object — Lucide icons take
+  // nativewind resolves `className` to a `style` object — Lucide icons take
   // size/color as props, not a style prop, so pull them back out here.
   const { color, width, height } = (StyleSheet.flatten(props.style) ?? {}) as FlattenedIconStyle;
   const size = props.size ?? width ?? height;
   return <IconComponent color={color} {...props} size={size} />;
 }
 
-function IconImpl(props: IconProps) {
-  return useCssElement(RawIconImpl, props, { className: 'style' });
-}
+const IconImpl = cssInterop(RawIconImpl, { className: 'style' });
 
 /**
  * A wrapper component for Lucide icons with Nativewind `className` support via `cssInterop`.

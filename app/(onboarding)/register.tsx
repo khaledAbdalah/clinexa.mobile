@@ -1,0 +1,188 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { Keyboard, Pressable, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { routes } from '@/constants/routes';
+import { FieldLabel, FieldRow } from '@/components/form-field';
+import { Icon } from '@/components/ui/icon';
+import { Input } from '@/components/ui/input';
+import { PasswordField } from '@/components/ui/password-field';
+import { PhoneField } from '@/components/ui/phone-field';
+import { PillButton } from '@/components/ui/pill-button';
+import { Text } from '@/components/ui/text';
+import { useSignup } from '@/hooks/auth/use-signup';
+import { getPostAuthRoute } from '@/lib/post-auth-route';
+import { useAuthStore } from '@/store/auth';
+import { signupSchema, type SignupInput } from '@/validation/auth.validation';
+
+export default function RegisterScreen() {
+  const insets = useSafeAreaInsets();
+
+  const form = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: { fullName: '', phone: '', password: '', passwordConfirmation: '' },
+  });
+
+  const { mutate, isPending } = useSignup(form.setError);
+
+  const onSubmit = form.handleSubmit((data) => {
+    Keyboard.dismiss();
+    mutate(data, {
+      onSuccess: () => {
+        // Tenants with WhatsApp OTP disabled auto-verify on signup (see
+        // register_controller.ts), so `status` may already be past
+        // 'needs_verification' here — skip straight to wherever it lands.
+        const { user, status } = useAuthStore.getState();
+        // replace, not push: the account now exists, so backing into this
+        // form again would resubmit against it and fail on a duplicate phone.
+        router.replace(getPostAuthRoute(status, user));
+      },
+    });
+  });
+
+  return (
+    <View className="flex-1 bg-background">
+      <Image
+        source={require('@/assets/images/splash-pattern.png')}
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: '100%',
+          height: 270,
+        }}
+        contentFit="cover"
+      />
+
+      <View className="flex-1" style={{ paddingTop: insets.top }}>
+        <KeyboardAwareScrollView
+          bottomOffset={120}
+          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 32 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="flex-row items-center gap-3 pt-2 pb-2" style={{ direction: 'ltr' }}>
+            <Pressable onPress={() => router.back()} hitSlop={12} className="p-2">
+              <Icon as={ChevronLeft} size={24} className="text-primary" />
+            </Pressable>
+            <Text
+              className="text-foreground flex-1 text-right text-3xl"
+              style={{ fontFamily: 'app-font-bold' }}
+            >
+              إنشاء حساب جديد
+            </Text>
+          </View>
+          <Text
+            className="text-muted-foreground mt-2 text-lg"
+            style={{ fontFamily: 'app-font-regular' }}
+          >
+            للاستمرار، املأ بياناتك بكل دقة
+          </Text>
+
+          <View className="mt-8 gap-6">
+            <View className="gap-2">
+              <FieldLabel label="الاسم بالكامل" />
+              <FieldRow
+                className={form.formState.errors.fullName ? 'border-destructive' : undefined}
+              >
+                <Controller
+                  control={form.control}
+                  name="fullName"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      className="text-foreground h-14 flex-1 border-0 bg-transparent text-right text-lg leading-7 shadow-none"
+                      placeholder="مثال: أحمد محمد"
+                      autoComplete="name"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+              </FieldRow>
+              {form.formState.errors.fullName ? (
+                <Text
+                  className="text-destructive text-xs"
+                  style={{ fontFamily: 'app-font-regular' }}
+                >
+                  {form.formState.errors.fullName.message}
+                </Text>
+              ) : null}
+            </View>
+
+            <Controller
+              control={form.control}
+              name="phone"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <PhoneField
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  errorMessage={fieldState.error?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <PasswordField
+                  autoComplete="password-new"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  errorMessage={fieldState.error?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="passwordConfirmation"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <PasswordField
+                  label="تأكيد كلمة المرور"
+                  placeholder="أعد إدخال كلمة المرور"
+                  autoComplete="password-new"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  errorMessage={fieldState.error?.message}
+                />
+              )}
+            />
+          </View>
+
+          <PillButton
+            variant="solid"
+            label="إنشاء الحساب"
+            className="mt-8"
+            isLoading={isPending}
+            onPress={onSubmit}
+          />
+
+          <View className="mt-4 flex-row items-center justify-center gap-1">
+            <Text
+              className="text-muted-foreground text-sm"
+              style={{ fontFamily: 'app-font-regular' }}
+            >
+              عندك حساب؟
+            </Text>
+            <Pressable onPress={() => router.replace(routes.login)}>
+              <Text className="text-primary text-sm" style={{ fontFamily: 'app-font-bold' }}>
+                سجّل دخول
+              </Text>
+            </Pressable>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </View>
+  );
+}

@@ -16,6 +16,8 @@ import { toastConfig } from '@/config/toast';
 import { SettingKeys } from '@/constants/settings.constant';
 import { useAppBootstrap } from '@/hooks/use-app-bootstrap';
 import { useForceUpdate } from '@/hooks/use-force-update';
+import { usePushNotificationResponse } from '@/hooks/notifications/use-push-notification-response';
+import { usePushTokenRegistration } from '@/hooks/notifications/use-push-token-registration';
 import { useBootStore } from '@/store/boot';
 import { useSettingsStore } from '@/store/settings';
 
@@ -32,6 +34,9 @@ export default function RootLayout() {
   // Maintenance mode and force-update both skip the index redirect (which normally
   // flips entryResolved), so the splash must be allowed to hide on its own here.
   const isAppReady = isReady && (entryResolved || isMaintenanceMode || isForceUpdateRequired);
+
+  usePushTokenRegistration(isReady);
+  usePushNotificationResponse(isReady);
 
   return (
     <SafeAreaProvider>

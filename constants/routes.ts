@@ -18,5 +18,11 @@ export const routes = {
   tabsInvoices: '/invoices',
   notifications: '/notifications',
   medicalTimeline: '/medical-timeline',
+  chat: '/chat',
   profile: '/profile',
+  editProfile: '/edit-profile',
+  changePassword: '/change-password',
+  bookAppointment: '/book-appointment',
+  prescriptionDetail: (id: string) => `/prescription/${id}` as const,
+  invoiceDetail: (id: string) => `/invoice/${id}` as const,
 } as const;

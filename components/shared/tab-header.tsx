@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
+import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { Icon } from '@/components/ui/icon';
@@ -8,9 +9,11 @@ import { Text } from '@/components/ui/text';
 type TabHeaderProps = {
   title: string;
   subtitle?: string;
+  /** Optional trailing action (e.g. an icon button) rendered at the row's other end. */
+  action?: ReactNode;
 };
 
-export function TabHeader({ title, subtitle }: TabHeaderProps) {
+export function TabHeader({ title, subtitle, action }: TabHeaderProps) {
   return (
     <View className="gap-1 px-6 pt-2">
       <View className="flex-row items-center gap-3" style={{ direction: 'ltr' }}>
@@ -24,6 +27,8 @@ export function TabHeader({ title, subtitle }: TabHeaderProps) {
         >
           {title}
         </Text>
+
+        {action}
       </View>
 
       {subtitle ? (

@@ -50,3 +50,9 @@ export interface ApiError {
   message: string;
   errors?: Record<string, string[]>;
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+}

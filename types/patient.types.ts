@@ -28,84 +28,46 @@ export interface CompleteOnboardingRequest {
   notes?: string;
 }
 
-export type AppointmentStatus = 'scheduled' | 'checked_in' | 'completed' | 'cancelled' | 'no_show';
+/** All fields optional — `PATCH /patient/profile` is a partial update. Does not accept `phone`/`patientNumber`. */
+export interface UpdatePatientProfileRequest {
+  fullName?: string;
+  dateOfBirth?: string;
+  gender?: Gender;
+  address?: string;
+  allergies?: string;
+  chronicConditions?: string;
+  currentMedications?: string;
+  bloodType?: string;
+  notes?: string;
+}
 
-export interface Appointment {
-  id: string;
-  patientId: string;
-  doctorId: string;
+export interface PatientHomeQueue {
+  appointmentId: string;
+  queueNumber: number;
+  doctorName: string;
+  doctorSpecialty: string | null;
   scheduledDate: string;
-  queueNumber: number | null;
-  status: AppointmentStatus;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string | null;
-  doctor?: { id: string; fullName: string };
+  patientsAhead: number;
+  currentQueueNumber: number | null;
 }
 
-export interface PrescriptionItem {
-  id: string;
-  drugId: string;
-  dosage: string | null;
-  instructions: string | null;
-}
-
-export interface Prescription {
-  id: string;
-  encounterId: string;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string | null;
-  items?: PrescriptionItem[];
-}
-
-export type InvoiceStatus = 'unpaid' | 'partially_paid' | 'paid' | 'cancelled';
-
-export interface Payment {
-  id: string;
-  invoiceId: string;
+export interface PatientHomeInstallment {
+  installmentId: string;
   amount: number;
-  method: string;
-  paidAt: string;
-  createdAt: string;
-  updatedAt: string | null;
+  dueDate: string;
+  totalInstallments: number;
 }
 
-export interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  encounterId: string;
-  subtotal: number;
-  discountAmount: number;
-  discountReason: string | null;
-  total: number;
-  remainingAmount: number;
-  status: InvoiceStatus;
-  createdAt: string;
-  updatedAt: string | null;
-  items?: unknown[];
-  payments?: Payment[];
-  installments?: unknown[];
-}
-
-export type TimelineEntryType =
-  'appointment' | 'encounter' | 'prescription' | 'invoice' | 'payment';
-
-export interface TimelineEntry {
-  type: TimelineEntryType;
-  id: string;
+export interface PatientHomeLastVisit {
   date: string;
-  data: Appointment | Prescription | Invoice | Payment | Record<string, unknown>;
+  doctorName: string;
+  doctorSpecialty: string | null;
+  diagnosis: string | null;
 }
 
-export interface PaginationMeta {
-  total: number;
-  perPage: number;
-  currentPage: number;
-  lastPage: number;
-  firstPage: number;
-  firstPageUrl: string;
-  lastPageUrl: string;
-  nextPageUrl: string | null;
-  previousPageUrl: string | null;
+export interface PatientHome {
+  queue: PatientHomeQueue | null;
+  balanceDue: number | null;
+  nextInstallment: PatientHomeInstallment | null;
+  lastVisit: PatientHomeLastVisit | null;
 }

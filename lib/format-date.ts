@@ -1,18 +1,26 @@
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { arEG } from 'date-fns/locale';
 
+// API dates are an external boundary - a null/malformed value from the server
+// (seen in practice on chat messages) must not crash the screen rendering it.
+function safeFormat(date: string, pattern: string): string {
+  const parsed = new Date(date);
+  if (!isValid(parsed)) return '—';
+  return format(parsed, pattern, { locale: arEG });
+}
+
 export function formatDate(date: string) {
-  return format(new Date(date), 'PPP', { locale: arEG });
+  return safeFormat(date, 'PPP');
 }
 
 export function formatDayName(date: string) {
-  return format(new Date(date), 'EEEE', { locale: arEG });
+  return safeFormat(date, 'EEEE');
 }
 
 export function formatMonth(date: string) {
-  return format(new Date(date), 'LLLL yyyy', { locale: arEG });
+  return safeFormat(date, 'LLLL yyyy');
 }
 
 export function formatTime(date: string) {
-  return format(new Date(date), 'p', { locale: arEG });
+  return safeFormat(date, 'p');
 }

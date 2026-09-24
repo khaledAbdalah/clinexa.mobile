@@ -1,7 +1,7 @@
 import { Eye, EyeOff } from 'lucide-react-native';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
-import { Pressable, View, type TextInputProps } from 'react-native';
+import { useRef, useState } from 'react';
+import { Pressable, View, type TextInput, type TextInputProps } from 'react-native';
 
 import { cn } from '@/lib/utils';
 import { FieldLabel, FieldRow } from '@/components/form-field';
@@ -26,19 +26,29 @@ export function PasswordField({
   ...inputProps
 }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+
+  // Flipping `secureTextEntry` can drop focus (and the keyboard with it) on Android, so
+  // put focus back if the field was focused when the eye was tapped.
+  const toggleVisible = () => {
+    const wasFocused = inputRef.current?.isFocused() ?? false;
+    setVisible((v) => !v);
+    if (wasFocused) requestAnimationFrame(() => inputRef.current?.focus());
+  };
 
   return (
     <View className="gap-2">
       <FieldLabel label={label} required={required} />
       <FieldRow className={cn(errorMessage && 'border-destructive')}>
         <Input
+          ref={inputRef}
           className="text-foreground h-14 flex-1 border-0 bg-transparent text-right text-lg leading-7 shadow-none"
           placeholder={placeholder}
           secureTextEntry={!visible}
           autoComplete={autoComplete}
           {...inputProps}
         />
-        <Pressable onPress={() => setVisible((v) => !v)} hitSlop={8}>
+        <Pressable onPress={toggleVisible} hitSlop={8}>
           <Icon as={visible ? Eye : EyeOff} size={18} className="text-muted-foreground" />
         </Pressable>
       </FieldRow>

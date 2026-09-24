@@ -42,6 +42,8 @@ export interface AuthResponse {
     user: User;
     access: string;
     refresh: string;
+    /** True when this login reactivated a temporarily-deleted account. */
+    restored?: boolean;
   };
 }
 
@@ -49,6 +51,13 @@ export interface ApiError {
   success: false;
   message: string;
   errors?: Record<string, string[]>;
+}
+
+export type DeleteAccountType = 'temporary' | 'permanent';
+
+export interface DeleteAccountRequest {
+  password: string;
+  type: DeleteAccountType;
 }
 
 export interface ChangePasswordRequest {

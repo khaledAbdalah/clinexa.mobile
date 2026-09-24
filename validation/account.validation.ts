@@ -17,3 +17,10 @@ export const changePasswordSchema = z
   });
 
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+export const deleteAccountSchema = z.object({
+  type: z.enum(['temporary', 'permanent']),
+  password: z.string().min(1, 'كلمة المرور مطلوبة لتأكيد الحذف'),
+});
+
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;

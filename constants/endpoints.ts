@@ -11,6 +11,7 @@ export const endpoints = {
     logout: '/account/logout',
     pushTokens: '/account/push-tokens',
     changePassword: '/account/change-password',
+    deleteAccount: '/account/profile',
   },
   patient: {
     onboarding: '/patient/onboarding',

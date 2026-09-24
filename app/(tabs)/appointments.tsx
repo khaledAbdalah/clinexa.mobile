@@ -21,6 +21,7 @@ import {
 } from '@/hooks/appointments/use-appointment-rows';
 import { useAppointments } from '@/hooks/appointments/use-appointments';
 import { useCancelAppointment } from '@/hooks/appointments/use-cancel-appointment';
+import { usePullToRefresh } from '@/hooks/queries/use-pull-to-refresh';
 
 const APPOINTMENTS_TAB_OPTIONS: { value: AppointmentsTab; label: string }[] = [
   { value: 'upcoming', label: 'القادمة' },
@@ -33,7 +34,15 @@ export default function AppointmentsScreen() {
 
   // Real cursor pagination via `useListQuery` (`use-appointments.ts`), same pattern as
   // `useNotifications`.
-  const { items: appointments, isLoading, isLoadingMore, hasMore, loadMore } = useAppointments();
+  const {
+    items: appointments,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    loadMore,
+    refetch,
+  } = useAppointments();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const cancelAppointment = useCancelAppointment();
   const { rows, upcomingCount, pastCount } = useAppointmentRows(appointments, tab);
 
@@ -60,6 +69,8 @@ export default function AppointmentsScreen() {
         }
         onEndReached={() => hasMore && loadMore()}
         onEndReachedThreshold={0.4}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         ListHeaderComponent={
           <View className="gap-5 pb-5">
             <TabHeader title="المواعيد" />

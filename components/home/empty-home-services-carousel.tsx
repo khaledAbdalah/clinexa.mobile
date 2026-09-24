@@ -5,16 +5,17 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { routes } from '@/constants/routes';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { useServices } from '@/hooks/appointments/use-services';
 import { useCurrency } from '@/hooks/use-currency';
+import type { Service } from '@/types/appointment.types';
 
 /**
  * Horizontal carousel of the clinic's services for brand-new patients.
  * Tapping a card opens the booking screen with that service pre-selected.
- * Renders nothing while loading or when the clinic has no services.
+ * `services` comes from the home screen's combined `Promise.all` fetch
+ * (`usePatientHomeScreen`) rather than fetching its own — renders nothing
+ * when the clinic has no services.
  */
-export function EmptyHomeServicesCarousel() {
-  const { data: services } = useServices();
+export function EmptyHomeServicesCarousel({ services }: { services: Service[] }) {
   const { formatPrice } = useCurrency();
 
   if (!services?.length) return null;

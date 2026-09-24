@@ -17,6 +17,7 @@ import { SettingKeys } from '@/constants/settings.constant';
 import { useGlobalChatNotifications } from '@/hooks/chat/use-global-chat-notifications';
 import { useAppBootstrap } from '@/hooks/use-app-bootstrap';
 import { useForceUpdate } from '@/hooks/use-force-update';
+import { useHomeDataBootstrap } from '@/hooks/use-home-data-bootstrap';
 import { useNotificationSocket } from '@/hooks/notifications/use-notification-socket';
 import { usePushNotificationResponse } from '@/hooks/notifications/use-push-notification-response';
 import { usePushTokenRegistration } from '@/hooks/notifications/use-push-token-registration';
@@ -39,9 +40,12 @@ export default function RootLayout() {
     (state) => state.get(SettingKeys.MAINTENANCE_MODE_ENABLED) === true
   );
   const { isForceUpdateRequired, storeUrl } = useForceUpdate();
+
+  const isHomeDataReady = useHomeDataBootstrap(isReady);
   // Maintenance mode and force-update both skip the index redirect (which normally
   // flips entryResolved), so the splash must be allowed to hide on its own here.
-  const isAppReady = isReady && (entryResolved || isMaintenanceMode || isForceUpdateRequired);
+  const isAppReady =
+    isReady && (entryResolved || isMaintenanceMode || isForceUpdateRequired) && isHomeDataReady;
 
   usePushTokenRegistration(isReady);
   usePushNotificationResponse(isReady);

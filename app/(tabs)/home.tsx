@@ -1,4 +1,5 @@
-import { ActivityIndicator, ScrollView } from 'react-native';
+import { useEffect } from 'react';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabInset } from '@/constants/theme';
@@ -6,22 +7,34 @@ import { BalanceDueCard } from '@/components/home/balance-due-card';
 import { EmptyAppointmentsCard } from '@/components/home/empty-appointments-card';
 import { GreetingHeader } from '@/components/home/greeting-header';
 import { HomeClinicSections } from '@/components/home/home-clinic-sections';
+import { HomeScreenSkeleton } from '@/components/home/home-screen-skeleton';
 import { InstallmentCard } from '@/components/home/installment-card';
 import { LastVisitCard } from '@/components/home/last-visit-card';
 import { QueueCarousel } from '@/components/home/queue-carousel';
 import { ReturningPatientCard } from '@/components/home/returning-patient-card';
 import { useCurrency } from '@/hooks/use-currency';
 import { formatDate } from '@/lib/format-date';
-import { useUnreadCount } from '@/hooks/notifications/use-unread-count';
-import { usePatientHome } from '@/hooks/patient/use-patient-home';
+import { usePatientHomeScreen } from '@/hooks/patient/use-patient-home';
+import { usePullToRefresh } from '@/hooks/queries/use-pull-to-refresh';
 import { useAuthStore } from '@/store/auth';
+import { useBootStore } from '@/store/boot';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const user = useAuthStore((state) => state.user);
-  const { data: unreadCount = 0 } = useUnreadCount();
-  const { data: home, isLoading } = usePatientHome();
+  const { data, isLoading, refetch } = usePatientHomeScreen();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
+
+  // Releases the splash overlay (see `useHomeDataBootstrap`) once the first load settles.
+  useEffect(() => {
+    if (!isLoading) useBootStore.getState().markHomeReady();
+  }, [isLoading]);
+
   const { formatPrice } = useCurrency();
+
+  const home = data?.home;
+  const unreadCount = data?.unreadCount ?? 0;
+  const services = data?.services ?? [];
 
   // `queues` is nearest-first; fall back to the single `queue` for older API responses.
   const queues = home?.queues?.length ? home.queues : home?.queue ? [home.queue] : [];
@@ -38,6 +51,9 @@ export default function HomeScreen() {
         gap: 16,
       }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0d9488" />
+      }
     >
       <GreetingHeader
         fullName={user?.fullName ?? 'ضيف'}
@@ -46,39 +62,37 @@ export default function HomeScreen() {
       />
 
       {isLoading ? (
-        <ActivityIndicator className="py-16" color="#0d9488" />
-      ) : queues.length ? (
-        <QueueCarousel queues={queues} />
-      ) : null}
+        <HomeScreenSkeleton />
+      ) : (
+        <>
+          {queues.length ? <QueueCarousel queues={queues} /> : null}
 
-      {!isLoading && balanceDue !== null ? (
-        <BalanceDueCard amount={formatPrice(balanceDue)} />
-      ) : null}
+          {balanceDue !== null ? <BalanceDueCard amount={formatPrice(balanceDue)} /> : null}
 
-      {!isLoading && nextInstallment ? (
-        <InstallmentCard
-          nextInstallmentDate={formatDate(nextInstallment.dueDate)}
-          installmentAmount={formatPrice(nextInstallment.amount)}
-          totalInstallments={nextInstallment.totalInstallments}
-        />
-      ) : null}
+          {nextInstallment ? (
+            <InstallmentCard
+              nextInstallmentDate={formatDate(nextInstallment.dueDate)}
+              installmentAmount={formatPrice(nextInstallment.amount)}
+              totalInstallments={nextInstallment.totalInstallments}
+            />
+          ) : null}
 
-      {!isLoading && lastVisit ? (
-        <LastVisitCard
-          date={formatDate(lastVisit.date)}
-          doctorName={lastVisit.doctorName}
-          doctorSpecialty={lastVisit.doctorSpecialty ?? '—'}
-          diagnosis={lastVisit.diagnosis ?? '—'}
-        />
-      ) : null}
+          {lastVisit ? (
+            <LastVisitCard
+              date={formatDate(lastVisit.date)}
+              doctorName={lastVisit.doctorName}
+              doctorSpecialty={lastVisit.doctorSpecialty ?? '—'}
+              diagnosis={lastVisit.diagnosis ?? '—'}
+            />
+          ) : null}
 
-      {!isLoading && !queues.length && lastVisit ? (
-        <ReturningPatientCard lastVisit={lastVisit} />
-      ) : null}
+          {!queues.length && lastVisit ? <ReturningPatientCard lastVisit={lastVisit} /> : null}
 
-      {!isLoading && !queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
+          {!queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
 
-      {!isLoading ? <HomeClinicSections /> : null}
+          <HomeClinicSections services={services} />
+        </>
+      )}
     </ScrollView>
   );
 }

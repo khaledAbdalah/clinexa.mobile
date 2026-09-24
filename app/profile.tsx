@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { History, KeyRound, MapPin, Trash2, User } from 'lucide-react-native';
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { routes } from '@/constants/routes';
@@ -14,6 +14,7 @@ import { ProfileMenuRow } from '@/components/profile/profile-menu-row';
 import { TabHeader } from '@/components/shared/tab-header';
 import { useLogout } from '@/hooks/auth/use-logout';
 import { usePatientProfile } from '@/hooks/patient/use-patient-profile';
+import { usePullToRefresh } from '@/hooks/queries/use-pull-to-refresh';
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { initials } from '@/lib/initials';
 import { useAuthStore } from '@/store/auth';
@@ -23,7 +24,8 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const user = useAuthStore((state) => state.user);
   const { handleLogout, isLoggingOut } = useLogout();
-  const { data: patient } = usePatientProfile();
+  const { data: patient, refetch } = usePatientProfile();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   if (!user) {
@@ -40,6 +42,9 @@ export default function ProfileScreen() {
           gap: 16,
         }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0d9488" />
+        }
       >
         <TabHeader title="الملف الشخصي" />
 

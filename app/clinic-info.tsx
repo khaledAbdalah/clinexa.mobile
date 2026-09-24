@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SettingKeys } from '@/constants/settings.constant';
@@ -7,6 +7,7 @@ import { ClinicAddressCard } from '@/components/clinic-info/clinic-address-card'
 import { ClinicContactCard } from '@/components/clinic-info/clinic-contact-card';
 import { WorkingHoursCard } from '@/components/clinic-info/working-hours-card';
 import { TabHeader } from '@/components/shared/tab-header';
+import { usePullToRefresh } from '@/hooks/queries/use-pull-to-refresh';
 import { useSettingsStore } from '@/store/settings';
 import type { WorkingHoursEntry } from '@/types/settings.types';
 
@@ -18,6 +19,8 @@ export default function ClinicInfoScreen() {
   const clinicPhone = useSettingsStore((state) => state.get(SettingKeys.CLINIC_PHONE));
   const clinicWhatsapp = useSettingsStore((state) => state.get(SettingKeys.CLINIC_WHATSAPP_NUMBER));
   const workingHours = useSettingsStore((state) => state.get(SettingKeys.WORKING_HOURS));
+  const fetchSettings = useSettingsStore((state) => state.fetchSettings);
+  const { refreshing, onRefresh } = usePullToRefresh(fetchSettings);
 
   const phones = Array.isArray(clinicPhone) ? clinicPhone : [];
   const whatsappNumbers = Array.isArray(clinicWhatsapp) ? clinicWhatsapp : [];
@@ -34,6 +37,9 @@ export default function ClinicInfoScreen() {
         gap: 16,
       }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0d9488" />
+      }
     >
       <TabHeader title="معلومات العيادة" />
 

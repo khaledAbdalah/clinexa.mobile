@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { History, KeyRound, User } from 'lucide-react-native';
+import { History, KeyRound, MapPin, User } from 'lucide-react-native';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -31,7 +31,6 @@ export default function ProfileScreen() {
       className="bg-background flex-1"
       style={{ paddingTop: insets.top }}
       contentContainerStyle={{
-        paddingHorizontal: 24,
         paddingBottom: insets.bottom + BottomTabInset,
         gap: 16,
       }}
@@ -39,7 +38,7 @@ export default function ProfileScreen() {
     >
       <TabHeader title="الملف الشخصي" />
 
-      <View className="mt-2 gap-4">
+      <View className="mt-2 gap-4 px-6">
         <ProfileHeaderCard fullName={user.fullName} initials={user.initials} phone={user.phone} />
         {patient && <PatientCodeCard patientNumber={patient.patientNumber} />}
 
@@ -56,8 +55,13 @@ export default function ProfileScreen() {
           />
           <ProfileMenuRow
             icon={History}
-            label="الخط الزمني الطبي"
+            label="السجل المرضي"
             onPress={() => router.push(routes.medicalTimeline)}
+          />
+          <ProfileMenuRow
+            icon={MapPin}
+            label="معلومات العيادة"
+            onPress={() => router.push(routes.clinicInfo)}
           />
         </View>
 

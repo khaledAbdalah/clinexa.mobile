@@ -13,6 +13,10 @@ export function formatDate(date: string) {
   return safeFormat(date, 'PPP');
 }
 
+export function formatDayMonth(date: string) {
+  return safeFormat(date, 'd MMMM');
+}
+
 export function formatDayName(date: string) {
   return safeFormat(date, 'EEEE');
 }

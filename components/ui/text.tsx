@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import { Slot } from '@rn-primitives/slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
+import { localizeDigits } from '@/lib/numerals';
 import { Platform, Text as RNText, type Role } from 'react-native';
 
 const textVariants = cva(
@@ -68,11 +69,15 @@ function Text({
   className,
   asChild = false,
   variant = 'default',
+  latinDigits = false,
+  children,
   ...props
 }: React.ComponentProps<typeof RNText> &
   React.RefAttributes<typeof RNText> &
   TextVariantProps & {
     asChild?: boolean;
+    /** Keep Western digits (0-9) - for identifiers like patient/invoice codes. Default: Arabic-Indic. */
+    latinDigits?: boolean;
   }) {
   const textClass = React.useContext(TextClassContext);
   const Component = asChild ? Slot : RNText;
@@ -82,7 +87,9 @@ function Text({
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
       {...props}
-    />
+    >
+      {asChild || latinDigits ? children : localizeDigits(children)}
+    </Component>
   );
 }
 

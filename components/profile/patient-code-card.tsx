@@ -24,7 +24,11 @@ export function PatientCodeCard({ patientNumber }: PatientCodeCardProps) {
       <Text className="text-foreground text-base" style={{ fontFamily: 'app-font-semibold' }}>
         رقم ملفك
       </Text>
-      <Text className="text-foreground text-4xl" style={{ fontFamily: 'app-font-bold' }}>
+      <Text
+        latinDigits
+        className="text-foreground text-4xl"
+        style={{ fontFamily: 'app-font-bold' }}
+      >
         {patientNumber}
       </Text>
     </Pressable>

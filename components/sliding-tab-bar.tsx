@@ -1,6 +1,6 @@
 import { type BottomTabBarProps } from 'expo-router/js-tabs';
 import * as Haptics from 'expo-haptics';
-import { Calendar, Home, Pill, Receipt, type LucideIcon } from 'lucide-react-native';
+import { Calendar, Home, MessageCircle, Pill, Receipt, type LucideIcon } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -14,21 +14,28 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Badge } from '@/components/ui/badge';
+import { Text as UIText } from '@/components/ui/text';
 import { Colors } from '@/constants/theme';
+import { useChatConversation } from '@/hooks/chat/use-chat-conversation';
 
 const TAB_ICONS: Record<string, LucideIcon> = {
   home: Home,
   appointments: Calendar,
   prescriptions: Pill,
   invoices: Receipt,
+  chat: MessageCircle,
 };
 
 const TAB_LABELS: Record<string, string> = {
   home: 'الرئيسية',
-  appointments: 'مواعيدي',
-  prescriptions: 'روشتاتي',
-  invoices: 'فواتيري',
+  appointments: 'المواعيد',
+  prescriptions: 'الروشتات',
+  invoices: 'الفواتير',
+  chat: 'المحادثة',
 };
+
+const MAX_DISPLAYED_UNREAD_COUNT = 9;
 
 const SLIDER_GAP = 8; // horizontal breathing room around the highlight
 
@@ -40,6 +47,9 @@ export function SlidingTabBar({ state, navigation }: BottomTabBarProps) {
   const inactiveColor = colors.textSecondary;
 
   const routeCount = state.routes.length;
+
+  const { data: chatConversation } = useChatConversation();
+  const chatUnreadCount = chatConversation?.conversation.unreadCount ?? 0;
 
   // Measure the real width so the flexed tabs and the sliding highlight match.
   const [barWidth, setBarWidth] = useState(0);
@@ -64,6 +74,10 @@ export function SlidingTabBar({ state, navigation }: BottomTabBarProps) {
   const onLayout = (e: LayoutChangeEvent) => {
     setBarWidth(e.nativeEvent.layout.width);
   };
+
+  if (state.routes[state.index]?.name === 'chat') {
+    return null;
+  }
 
   return (
     <View style={[styles.wrapper, { bottom: insets.bottom + 12 }]}>
@@ -106,9 +120,22 @@ export function SlidingTabBar({ state, navigation }: BottomTabBarProps) {
             }
           };
 
+          const unreadCount = route.name === 'chat' ? chatUnreadCount : 0;
+
           return (
             <Pressable key={route.key} onPress={onPress} style={styles.tabItem}>
-              {Icon && <Icon size={22} color={color} />}
+              <View style={styles.iconWrapper}>
+                {Icon && <Icon size={22} color={color} />}
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" style={styles.badge} className="h-4 min-w-4 px-1">
+                    <UIText className="text-[10px] leading-none text-white">
+                      {unreadCount > MAX_DISPLAYED_UNREAD_COUNT
+                        ? `${MAX_DISPLAYED_UNREAD_COUNT}+`
+                        : unreadCount}
+                    </UIText>
+                  </Badge>
+                )}
+              </View>
               <Text numberOfLines={1} style={[styles.label, { color }]}>
                 {label}
               </Text>
@@ -149,6 +176,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 3,
+  },
+  iconWrapper: {
+    position: 'relative',
+  },
+
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -10,
   },
   label: {
     fontFamily: 'app-font-regular',

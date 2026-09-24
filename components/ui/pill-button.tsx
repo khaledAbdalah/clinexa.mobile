@@ -26,7 +26,7 @@ const pillButtonVariants = cva('h-14 flex-row items-center rounded-full px-6', {
   },
 });
 
-const pillButtonTextVariants = cva('flex-1 text-center text-base', {
+const pillButtonTextVariants = cva('text-center text-base', {
   variants: {
     variant: {
       solid: 'text-primary-foreground',
@@ -96,7 +96,7 @@ function PillButton({
         <>
           {icon ? <View style={{ width: iconSize }} /> : null}
           <Text
-            className={cn(pillButtonTextVariants({ variant }), labelClassName)}
+            className={cn(pillButtonTextVariants({ variant }), icon && 'flex-1', labelClassName)}
             style={{ fontFamily: 'app-font-semibold' }}
           >
             {label}

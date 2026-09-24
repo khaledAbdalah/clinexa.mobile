@@ -14,6 +14,7 @@ import { SplashOverlay } from '@/components/other/splash-overlay';
 import { QueryProvider } from '@/config/react-query';
 import { toastConfig } from '@/config/toast';
 import { SettingKeys } from '@/constants/settings.constant';
+import { useGlobalChatNotifications } from '@/hooks/chat/use-global-chat-notifications';
 import { useAppBootstrap } from '@/hooks/use-app-bootstrap';
 import { useForceUpdate } from '@/hooks/use-force-update';
 import { usePushNotificationResponse } from '@/hooks/notifications/use-push-notification-response';
@@ -22,6 +23,11 @@ import { useBootStore } from '@/store/boot';
 import { useSettingsStore } from '@/store/settings';
 
 SplashScreen.preventAutoHideAsync();
+
+function GlobalChatNotificationsBridge({ isReady }: { isReady: boolean }) {
+  useGlobalChatNotifications(isReady);
+  return null;
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -41,6 +47,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryProvider>
+        <GlobalChatNotificationsBridge isReady={isReady} />
         <KeyboardProvider>
           <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <StatusBar hidden />

@@ -18,6 +18,7 @@ export const endpoints = {
     timeline: '/patient/timeline',
     appointments: '/patient/appointments',
     doctors: '/patient/doctors',
+    services: '/patient/services',
     cancelAppointment: (id: string) => `/patient/appointments/${id}/cancel`,
     home: '/patient/home',
     prescriptions: '/patient/prescriptions',

@@ -37,6 +37,14 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+export async function refreshAccessToken(): Promise<string> {
+  const refreshToken = await SecureStorage.getRefreshToken();
+  const { data } = await api.post(endpoints.auth.refresh, { refresh: refreshToken });
+  await SecureStorage.setAccessToken(data.access);
+  await SecureStorage.setRefreshToken(data.refresh);
+  return data.access;
+}
+
 const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -74,11 +82,8 @@ api.interceptors.response.use(
 
       // 5. Starting the refresh process
       return new Promise((resolve, reject) => {
-        SecureStorage.getRefreshToken()
-          .then((refreshToken) => api.post(endpoints.auth.refresh, { refresh: refreshToken }))
-          .then(async ({ data }) => {
-            await SecureStorage.setAccessToken(data.access);
-            await SecureStorage.setRefreshToken(data.refresh);
+        refreshAccessToken()
+          .then(() => {
             processQueue(null); // 6. Release pending requests
             resolve(api(originalRequest)); // 7. Retry the original request
           })

@@ -1,7 +1,8 @@
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/text';
-import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/use-theme';
+import { cn, hexToRgba } from '@/lib/utils';
 
 type SegmentedToggleOption<T extends string> = {
   value: T;
@@ -22,21 +23,34 @@ export function SegmentedToggle<T extends string>({
   options,
   variant = 'outline',
 }: SegmentedToggleProps<T>) {
+  const colors = useTheme();
+
   return (
     <View className="bg-muted mx-6 flex-row gap-1 rounded-full p-1">
       {options.map((option) => {
         const isActive = option.value === value;
+        const isActiveOutline = isActive && variant === 'outline';
         return (
           <Pressable
             key={option.value}
             onPress={() => onChange(option.value)}
             className={cn(
               'flex-1 items-center rounded-full py-2.5',
-              isActive &&
-                (variant === 'solid'
-                  ? 'bg-primary'
-                  : 'bg-card border-primary/30 border shadow-sm shadow-black/5')
+              isActive && (variant === 'solid' ? 'bg-primary' : 'bg-card')
             )}
+            style={
+              isActiveOutline
+                ? {
+                    borderWidth: 1,
+                    borderColor: hexToRgba(colors.primary, 0.3),
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 2,
+                    elevation: 1,
+                  }
+                : undefined
+            }
           >
             <Text
               className={cn(

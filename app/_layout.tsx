@@ -17,6 +17,7 @@ import { SettingKeys } from '@/constants/settings.constant';
 import { useGlobalChatNotifications } from '@/hooks/chat/use-global-chat-notifications';
 import { useAppBootstrap } from '@/hooks/use-app-bootstrap';
 import { useForceUpdate } from '@/hooks/use-force-update';
+import { useNotificationSocket } from '@/hooks/notifications/use-notification-socket';
 import { usePushNotificationResponse } from '@/hooks/notifications/use-push-notification-response';
 import { usePushTokenRegistration } from '@/hooks/notifications/use-push-token-registration';
 import { useBootStore } from '@/store/boot';
@@ -26,6 +27,7 @@ SplashScreen.preventAutoHideAsync();
 
 function GlobalChatNotificationsBridge({ isReady }: { isReady: boolean }) {
   useGlobalChatNotifications(isReady);
+  useNotificationSocket(isReady);
   return null;
 }
 

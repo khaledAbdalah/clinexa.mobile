@@ -8,7 +8,7 @@ import { GreetingHeader } from '@/components/home/greeting-header';
 import { HomeClinicSections } from '@/components/home/home-clinic-sections';
 import { InstallmentCard } from '@/components/home/installment-card';
 import { LastVisitCard } from '@/components/home/last-visit-card';
-import { QueueCard } from '@/components/home/queue-card';
+import { QueueCarousel } from '@/components/home/queue-carousel';
 import { ReturningPatientCard } from '@/components/home/returning-patient-card';
 import { useCurrency } from '@/hooks/use-currency';
 import { formatDate } from '@/lib/format-date';
@@ -23,7 +23,8 @@ export default function HomeScreen() {
   const { data: home, isLoading } = usePatientHome();
   const { formatPrice } = useCurrency();
 
-  const queue = home?.queue ?? null;
+  // `queues` is nearest-first; fall back to the single `queue` for older API responses.
+  const queues = home?.queues?.length ? home.queues : home?.queue ? [home.queue] : [];
   const balanceDue = home?.balanceDue ?? null;
   const nextInstallment = home?.nextInstallment ?? null;
   const lastVisit = home?.lastVisit ?? null;
@@ -46,15 +47,8 @@ export default function HomeScreen() {
 
       {isLoading ? (
         <ActivityIndicator className="py-16" color="#0d9488" />
-      ) : queue ? (
-        <QueueCard
-          queueNumber={String(queue.queueNumber)}
-          isReserved
-          doctorName={queue.doctorName}
-          doctorSpecialty={queue.doctorSpecialty ?? '—'}
-          date={formatDate(queue.scheduledDate)}
-          patientsAhead={queue.patientsAhead}
-        />
+      ) : queues.length ? (
+        <QueueCarousel queues={queues} />
       ) : null}
 
       {!isLoading && balanceDue !== null ? (
@@ -78,9 +72,11 @@ export default function HomeScreen() {
         />
       ) : null}
 
-      {!isLoading && !queue && lastVisit ? <ReturningPatientCard lastVisit={lastVisit} /> : null}
+      {!isLoading && !queues.length && lastVisit ? (
+        <ReturningPatientCard lastVisit={lastVisit} />
+      ) : null}
 
-      {!isLoading && !queue && !lastVisit ? <EmptyAppointmentsCard /> : null}
+      {!isLoading && !queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
 
       {!isLoading ? <HomeClinicSections /> : null}
     </ScrollView>

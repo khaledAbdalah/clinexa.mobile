@@ -66,7 +66,10 @@ export interface PatientHomeLastVisit {
 }
 
 export interface PatientHome {
+  /** Nearest upcoming appointment - superseded by `queues`, kept for older API responses. */
   queue: PatientHomeQueue | null;
+  /** Upcoming booked appointments, nearest first. */
+  queues?: PatientHomeQueue[];
   balanceDue: number | null;
   nextInstallment: PatientHomeInstallment | null;
   lastVisit: PatientHomeLastVisit | null;

@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { useBookAppointment } from '@/hooks/appointments/use-book-appointment';
 import { useDoctors } from '@/hooks/appointments/use-doctors';
 import { useServices } from '@/hooks/appointments/use-services';
+import { useUpcomingBookedAppointments } from '@/hooks/appointments/use-upcoming-booked-appointments';
 import type { Doctor, Service } from '@/types/appointment.types';
 
 /** How far ahead the calendar lets a patient book (≈3 months). */
@@ -44,6 +45,26 @@ export function useBookAppointmentForm() {
   const [minDate] = useState(() => startOfDay(new Date()));
   const maxDate = useMemo(() => addDays(minDate, MAX_BOOKING_DAYS_AHEAD), [minDate]);
 
+  const { data: bookedAppointments } = useUpcomingBookedAppointments(Boolean(selectedDoctorId));
+
+  const disabledDates = useMemo(() => {
+    const dates = new Set<string>();
+    if (!selectedDoctorId || !bookedAppointments) return dates;
+
+    for (const appointment of bookedAppointments) {
+      // Rule 1: same doctor, same day.
+      if (appointment.doctorId === selectedDoctorId) {
+        dates.add(appointment.scheduledDate);
+      }
+
+      if (selectedServiceId && appointment.serviceId === selectedServiceId) {
+        dates.add(appointment.scheduledDate);
+      }
+    }
+
+    return dates;
+  }, [bookedAppointments, selectedDoctorId, selectedServiceId]);
+
   const selectDoctor = (doctor: Doctor) => {
     setSelectedDoctorId(doctor.id);
     // Reset date when switching doctors — the old selection may not be valid
@@ -65,7 +86,10 @@ export function useBookAppointmentForm() {
 
   const clearService = () => setSelectedServiceId(null);
 
-  const canSubmit = Boolean(selectedDoctorId && selectedDate) && !bookAppointment.isPending;
+  const canSubmit =
+    Boolean(selectedDoctorId && selectedDate) &&
+    !(selectedDate && disabledDates.has(selectedDate)) &&
+    !bookAppointment.isPending;
 
   const handleSubmit = () => {
     if (!selectedDoctorId || !selectedDate) return;
@@ -97,6 +121,7 @@ export function useBookAppointmentForm() {
     workingDays,
     minDate,
     maxDate,
+    disabledDates,
     selectedDate,
     setSelectedDate,
     notes,

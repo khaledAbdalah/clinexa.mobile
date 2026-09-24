@@ -31,6 +31,13 @@ type BookingCalendarProps = {
   /** `YYYY-MM-DD` */
   selectedDate: string | null;
   onSelectDate: (isoDate: string) => void;
+  /**
+   * `YYYY-MM-DD` dates to disable on top of the working-days/min/max rules
+   * above — e.g. days the patient already has a conflicting booking on.
+   * Rendered identically to the "not a working day" disabled state so the
+   * two reasons a cell is unavailable don't look different to the user.
+   */
+  disabledDates?: ReadonlySet<string>;
 };
 
 /** Month-grid date picker for `app/book-appointment.tsx`. Weeks start on Sunday to
@@ -42,6 +49,7 @@ export function BookingCalendar({
   maxDate,
   selectedDate,
   onSelectDate,
+  disabledDates,
 }: BookingCalendarProps) {
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(minDate));
 
@@ -105,7 +113,8 @@ export function BookingCalendar({
             inMonth &&
             workingDays.has(day.getDay()) &&
             !isBefore(day, minDate) &&
-            !isAfter(day, maxDate);
+            !isAfter(day, maxDate) &&
+            !disabledDates?.has(isoDate);
           const isSelected = selectedDate === isoDate;
 
           return (

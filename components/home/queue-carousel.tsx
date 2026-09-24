@@ -29,6 +29,7 @@ export function QueueCarousel({ queues }: { queues: PatientHomeQueue[] }) {
       doctorSpecialty={queue.doctorSpecialty ?? '—'}
       date={formatDate(queue.scheduledDate)}
       patientsAhead={queue.patientsAhead}
+      serviceName={queue.serviceName}
     />
   );
 

@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Calendar, CircleCheck, HeartPulse, User, Users } from 'lucide-react-native';
+import { Calendar, CircleCheck, HeartPulse, Stethoscope, User, Users } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Icon } from '@/components/ui/icon';
@@ -12,6 +12,8 @@ type QueueCardProps = {
   doctorSpecialty: string;
   date: string;
   patientsAhead: number;
+  /** Snapshot of the booked service, if one was picked at booking time (it's optional there). */
+  serviceName?: string | null;
 };
 
 export function QueueCard({
@@ -21,6 +23,7 @@ export function QueueCard({
   doctorSpecialty,
   date,
   patientsAhead,
+  serviceName,
 }: QueueCardProps) {
   return (
     <View className="mx-6 overflow-hidden rounded-3xl">
@@ -71,6 +74,15 @@ export function QueueCard({
               </Text>
             </View>
           </View>
+
+          {serviceName ? (
+            <View className="flex-row items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1">
+              <Icon as={Stethoscope} size={12} className="text-white" />
+              <Text className="text-xs text-white" style={{ fontFamily: 'app-font-semibold' }}>
+                {serviceName}
+              </Text>
+            </View>
+          ) : null}
 
           <View className="flex-row items-center justify-between border-t border-white/15 pt-3.5">
             <View className="flex-row items-center gap-1.5">

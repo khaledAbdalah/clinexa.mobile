@@ -49,6 +49,8 @@ export interface PatientHomeQueue {
   scheduledDate: string;
   patientsAhead: number;
   currentQueueNumber: number | null;
+  /** Snapshot of the booked service, if one was picked at booking time (it's optional there). */
+  serviceName: string | null;
 }
 
 export interface PatientHomeInstallment {

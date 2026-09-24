@@ -31,13 +31,7 @@ export function ClinicAddressCard({ address, mapsUrl }: ClinicAddressCardProps) 
       </Text>
 
       {mapsUrl ? (
-        <PillButton
-          label="فتح الموقع على الخريطة"
-          variant="outline"
-          size="sm"
-          icon={null}
-          onPress={() => openExternalUrl(mapsUrl)}
-        />
+        <PillButton label="فتح الموقع على الخريطة" onPress={() => openExternalUrl(mapsUrl)} />
       ) : null}
     </View>
   );

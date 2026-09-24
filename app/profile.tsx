@@ -13,6 +13,7 @@ import { TabHeader } from '@/components/shared/tab-header';
 import { useLogout } from '@/hooks/auth/use-logout';
 import { usePatientProfile } from '@/hooks/patient/use-patient-profile';
 import { useRequireAuth } from '@/hooks/use-require-auth';
+import { initials } from '@/lib/initials';
 import { useAuthStore } from '@/store/auth';
 
 export default function ProfileScreen() {
@@ -39,7 +40,11 @@ export default function ProfileScreen() {
       <TabHeader title="الملف الشخصي" />
 
       <View className="mt-2 gap-4 px-6">
-        <ProfileHeaderCard fullName={user.fullName} initials={user.initials} phone={user.phone} />
+        <ProfileHeaderCard
+          fullName={user.fullName}
+          initials={initials(user.fullName) ?? '؟'}
+          phone={user.phone}
+        />
         {patient && <PatientCodeCard patientNumber={patient.patientNumber} />}
 
         <View className="gap-3">

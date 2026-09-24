@@ -25,12 +25,11 @@ export function ClinicContactCard({ phones, whatsappNumbers }: ClinicContactCard
         </Text>
       </View>
 
-      <View className="gap-2">
+      <View className="gap-3">
         {whatsappNumbers.map((number) => (
           <PillButton
             key={`whatsapp-${number}`}
-            variant="outline"
-            size="sm"
+            variant="solid"
             label={`واتساب - ${number}`}
             icon={MessageCircle}
             onPress={() => openExternalUrl(`https://wa.me/${number}`)}
@@ -40,7 +39,6 @@ export function ClinicContactCard({ phones, whatsappNumbers }: ClinicContactCard
           <PillButton
             key={`phone-${number}`}
             variant="outline"
-            size="sm"
             label={`اتصال - ${number}`}
             icon={Phone}
             onPress={() => openExternalUrl(`tel:${number}`)}

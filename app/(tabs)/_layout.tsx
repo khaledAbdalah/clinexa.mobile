@@ -14,6 +14,7 @@ export default function TabLayout() {
       <Tabs.Screen name="appointments" />
       <Tabs.Screen name="prescriptions" />
       <Tabs.Screen name="invoices" />
+      <Tabs.Screen name="chat" />
     </Tabs>
   );
 }

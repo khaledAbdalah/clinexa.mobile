@@ -24,11 +24,57 @@ const BOOTSTRAP_MESSAGES_LIMIT = 50;
  */
 function mergeMessages(base: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
   const byId = new Map(base.map((message) => [message.id, message]));
-  for (const message of incoming) byId.set(message.id, message);
+  for (const message of incoming) {
+    // Keep the row's `clientId` (its FlatList key) when a refetch overwrites a message
+    // that started life as an optimistic send, or that row would remount.
+    const clientId = byId.get(message.id)?.clientId;
+    byId.set(message.id, clientId ? { ...message, clientId } : message);
+  }
   return Array.from(byId.values()).sort((a, b) => {
     const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     return diff !== 0 ? diff : a.id.localeCompare(b.id);
   });
+}
+
+const OPTIMISTIC_PREFIX = 'optimistic-';
+
+function isOptimistic(message: ChatMessage) {
+  return message.id.startsWith(OPTIMISTIC_PREFIX);
+}
+
+/**
+ * Puts a server-confirmed message from the patient in place of its optimistic bubble:
+ * same array slot, same `clientId`, so the FlatList row keeps its key and just
+ * re-renders. The confirmation arrives twice - the socket's `new_message` echo and
+ * the POST response - and the API broadcasts *before* responding, so the socket
+ * usually wins. Both paths call this; whichever comes second finds the real id
+ * already present and changes nothing.
+ *
+ * `tempId` is known on the POST path. The socket path doesn't know it, so it takes
+ * the oldest pending optimistic bubble with the same body.
+ */
+function settleOwnMessage(
+  prev: ChatMessage[],
+  confirmed: ChatMessage,
+  tempId?: string
+): ChatMessage[] {
+  const alreadySettled = prev.some((message) => message.id === confirmed.id);
+  const index = prev.findIndex((message) =>
+    tempId
+      ? message.id === tempId
+      : isOptimistic(message) &&
+        message.senderType === confirmed.senderType &&
+        message.body === confirmed.body
+  );
+
+  if (alreadySettled) {
+    return index === -1 ? prev : prev.filter((_, i) => i !== index);
+  }
+  if (index === -1) return [...prev, confirmed];
+
+  const next = prev.slice();
+  next[index] = { ...confirmed, clientId: prev[index].clientId };
+  return next;
 }
 
 /**
@@ -104,11 +150,9 @@ export function useChat() {
   const appendMessage = useCallback(
     (incoming: ChatMessage) => {
       setMessages((prev) => {
-        // Optimistic-send + socket-echo dedupe: the POST response is appended
-        // immediately by `sendMessage` below, and the server's `new_message`
-        // broadcast for that same message arrives moments later over the
-        // socket - both funnel through this same id-keyed check, so whichever
-        // arrives second is silently dropped instead of duplicating the bubble.
+        // The patient's own message echoed back over the socket: settle its
+        // optimistic bubble in place instead of appending a second copy.
+        if (incoming.senderType === 'patient') return settleOwnMessage(prev, incoming);
         if (prev.some((message) => message.id === incoming.id)) return prev;
         return [...prev, incoming];
       });
@@ -195,9 +239,10 @@ export function useChat() {
       // message the patient just sent. A locally-timestamped temp id keeps this
       // entry out of `appendMessage`'s id-dedupe until it's swapped for the real
       // one below (or dropped entirely if the send fails).
-      const tempId = `optimistic-${Date.now()}`;
+      const tempId = `${OPTIMISTIC_PREFIX}${Date.now()}`;
       const optimisticMessage: ChatMessage = {
         id: tempId,
+        clientId: tempId,
         conversationId: conversation.id,
         senderType: 'patient',
         senderId: conversation.patientId,
@@ -208,15 +253,14 @@ export function useChat() {
 
       sendMutation.mutate(trimmed, {
         onSuccess: (message) => {
-          setMessages((prev) => prev.filter((m) => m.id !== tempId));
-          appendMessage(message);
+          setMessages((prev) => settleOwnMessage(prev, message, tempId));
         },
         onError: () => {
           setMessages((prev) => prev.filter((m) => m.id !== tempId));
         },
       });
     },
-    [conversation, sendMutation, appendMessage]
+    [conversation, sendMutation]
   );
 
   const loadOlderMessages = useCallback(async () => {
@@ -226,7 +270,7 @@ export function useChat() {
     // picking the pivot for `beforeId` - the API validates it as a uuid, and
     // an optimistic send that hasn't resolved yet would otherwise land at
     // index 0 as the "oldest" message.
-    const oldestRealMessage = messages.find((message) => !message.id.startsWith('optimistic-'));
+    const oldestRealMessage = messages.find((message) => !isOptimistic(message));
     if (!oldestRealMessage) return;
 
     setIsLoadingOlder(true);

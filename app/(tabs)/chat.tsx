@@ -84,7 +84,7 @@ export default function ChatScreen() {
             className="flex-1"
             inverted
             data={reversedMessages}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.clientId ?? item.id}
             renderItem={({ item }) => <ChatMessageBubble message={item} />}
             onEndReached={() => hasMoreOlder && loadOlderMessages()}
             onEndReachedThreshold={0.3}

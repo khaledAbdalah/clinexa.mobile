@@ -21,7 +21,10 @@ function toMinutes(time: string) {
 
 export interface ClinicOpenStatus {
   isOpen: boolean;
-  label: string;
+
+  state: string;
+
+  detail: string;
 }
 
 /** Open/closed status for "now" derived from the clinic's working hours, or
@@ -41,13 +44,15 @@ export function getClinicOpenStatus(
     if (nowMinutes >= toMinutes(todayEntry.startsAt) && nowMinutes < toMinutes(todayEntry.endsAt)) {
       return {
         isOpen: true,
-        label: `مفتوح دلوقتي · لحد ${formatTimeOfDay(todayEntry.endsAt)}`,
+        state: 'مفتوح دلوقتي',
+        detail: `لحد ${formatTimeOfDay(todayEntry.endsAt)}`,
       };
     }
     if (nowMinutes < toMinutes(todayEntry.startsAt)) {
       return {
         isOpen: false,
-        label: `مقفول دلوقتي · بنفتح النهارده ${formatTimeOfDay(todayEntry.startsAt)}`,
+        state: 'مقفول دلوقتي',
+        detail: `بنفتح النهارده ${formatTimeOfDay(todayEntry.startsAt)}`,
       };
     }
   }
@@ -59,7 +64,8 @@ export function getClinicOpenStatus(
     const when = offset === 1 ? 'بكرة' : `يوم ${DAY_NAMES[day]}`;
     return {
       isOpen: false,
-      label: `مقفول دلوقتي · بنفتح ${when} ${formatTimeOfDay(entry.startsAt)}`,
+      state: 'مقفول دلوقتي',
+      detail: `بنفتح ${when} ${formatTimeOfDay(entry.startsAt)}`,
     };
   }
 

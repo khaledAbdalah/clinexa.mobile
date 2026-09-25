@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabInset } from '@/constants/theme';
 import { BalanceDueCard } from '@/components/home/balance-due-card';
 import { EmptyAppointmentsCard } from '@/components/home/empty-appointments-card';
+import { EmptyHomeServicesCarousel } from '@/components/home/empty-home-services-carousel';
 import { GreetingHeader } from '@/components/home/greeting-header';
 import { HomeClinicSections } from '@/components/home/home-clinic-sections';
 import { HomeScreenSkeleton } from '@/components/home/home-screen-skeleton';
@@ -67,12 +68,14 @@ export default function HomeScreen() {
         <>
           {queues.length ? <QueueCarousel queues={queues} /> : null}
 
+          <EmptyHomeServicesCarousel services={services} />
+
           {balanceDue !== null ? <BalanceDueCard amount={formatPrice(balanceDue)} /> : null}
 
           {nextInstallment ? (
             <InstallmentCard
-              nextInstallmentDate={formatDate(nextInstallment.dueDate)}
-              installmentAmount={formatPrice(nextInstallment.amount)}
+              amount={formatPrice(nextInstallment.amount)}
+              dueDate={nextInstallment.dueDate}
               totalInstallments={nextInstallment.totalInstallments}
             />
           ) : null}
@@ -81,8 +84,7 @@ export default function HomeScreen() {
             <LastVisitCard
               date={formatDate(lastVisit.date)}
               doctorName={lastVisit.doctorName}
-              doctorSpecialty={lastVisit.doctorSpecialty ?? '—'}
-              diagnosis={lastVisit.diagnosis ?? '—'}
+              doctorSpecialty={lastVisit.doctorSpecialty}
             />
           ) : null}
 
@@ -90,7 +92,7 @@ export default function HomeScreen() {
 
           {!queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
 
-          <HomeClinicSections services={services} />
+          <HomeClinicSections />
         </>
       )}
     </ScrollView>

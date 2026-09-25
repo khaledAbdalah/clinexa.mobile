@@ -67,7 +67,6 @@ function ServicesCarouselSkeleton() {
 function ClinicSectionsSkeleton() {
   return (
     <View className="gap-4">
-      <ServicesCarouselSkeleton />
       <View className="bg-card border-border mx-6 flex-row items-center gap-4 rounded-2xl border p-5">
         <Bone className="h-12 w-12 rounded-full" />
         <View className="flex-1 gap-2">
@@ -93,6 +92,7 @@ export function HomeScreenSkeleton() {
   return (
     <View style={{ gap: 16 }}>
       <QueueCardSkeleton />
+      <ServicesCarouselSkeleton />
       <HomeCardSkeleton />
       <HomeCardSkeleton />
       <ClinicSectionsSkeleton />

@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils';
 
 type TabHeaderProps = {
   title: string;
+  /** Keep Western digits in the title — for identifiers like an invoice number. */
+  titleLatinDigits?: boolean;
   subtitle?: string;
   /** Optional trailing action (e.g. an icon button) rendered at the row's other end. */
   action?: ReactNode;
@@ -40,6 +42,7 @@ type TabHeaderProps = {
 
 export function TabHeader({
   title,
+  titleLatinDigits = false,
   subtitle,
   action,
   showBackButton = true,
@@ -60,6 +63,7 @@ export function TabHeader({
         ) : null}
 
         <Text
+          latinDigits={titleLatinDigits}
           className="text-foreground flex-1 text-right text-xl"
           style={{ fontFamily: 'app-font-bold' }}
         >

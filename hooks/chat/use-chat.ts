@@ -37,6 +37,9 @@ function mergeMessages(base: ChatMessage[], incoming: ChatMessage[]): ChatMessag
 }
 
 const OPTIMISTIC_PREFIX = 'optimistic-';
+// Appended to the timestamp so two sends in the same millisecond can't share a temp
+// id (and therefore a FlatList key).
+let optimisticSequence = 0;
 
 function isOptimistic(message: ChatMessage) {
   return message.id.startsWith(OPTIMISTIC_PREFIX);
@@ -239,7 +242,7 @@ export function useChat() {
       // message the patient just sent. A locally-timestamped temp id keeps this
       // entry out of `appendMessage`'s id-dedupe until it's swapped for the real
       // one below (or dropped entirely if the send fails).
-      const tempId = `${OPTIMISTIC_PREFIX}${Date.now()}`;
+      const tempId = `${OPTIMISTIC_PREFIX}${Date.now()}-${(optimisticSequence += 1)}`;
       const optimisticMessage: ChatMessage = {
         id: tempId,
         clientId: tempId,

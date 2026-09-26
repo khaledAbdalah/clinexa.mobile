@@ -40,9 +40,6 @@ export default function RegisterScreen() {
     Keyboard.dismiss();
     mutate(data, {
       onSuccess: () => {
-        // Tenants with WhatsApp OTP disabled auto-verify on signup (see
-        // register_controller.ts), so `status` may already be past
-        // 'needs_verification' here — skip straight to wherever it lands.
         const { user, status } = useAuthStore.getState();
         // replace, not push: the account now exists, so backing into this
         // form again would resubmit against it and fail on a duplicate phone.

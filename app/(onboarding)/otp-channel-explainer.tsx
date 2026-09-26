@@ -74,7 +74,7 @@ export default function OtpChannelExplainerScreen() {
           className="text-muted-foreground mt-3 text-center text-base leading-7"
           style={{ fontFamily: 'app-font-regular' }}
         >
-          هنبعتلك كود التحقق على واتساب
+          هنبعتلك كود التحقق للتأكيد من رقمك
         </Text>
       </View>
 

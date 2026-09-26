@@ -15,6 +15,7 @@ export interface Patient {
   updatedAt: string | null;
   fullName: string;
   phone: string;
+  email: string | null;
 }
 
 export interface CompleteOnboardingRequest {
@@ -31,6 +32,7 @@ export interface CompleteOnboardingRequest {
 /** All fields optional — `PATCH /patient/profile` is a partial update. Does not accept `phone`/`patientNumber`. */
 export interface UpdatePatientProfileRequest {
   fullName?: string;
+  email?: string;
   dateOfBirth?: string;
   gender?: Gender;
   address?: string;

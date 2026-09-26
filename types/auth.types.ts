@@ -2,6 +2,7 @@ export interface User {
   id: string;
   fullName: string;
   phone: string;
+  email: string;
   initials: string;
   isPhoneVerified: boolean;
   isOnboardingComplete: boolean;
@@ -17,6 +18,7 @@ export interface LoginRequest {
 export interface SignupRequest {
   fullName: string;
   phone: string;
+  email: string;
   password: string;
   passwordConfirmation: string;
 }

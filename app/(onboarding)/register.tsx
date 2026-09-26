@@ -25,7 +25,13 @@ export default function RegisterScreen() {
 
   const form = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { fullName: '', phone: '', password: '', passwordConfirmation: '' },
+    defaultValues: {
+      fullName: '',
+      phone: '',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
+    },
   });
 
   const { mutate, isPending } = useSignup(form.setError);
@@ -128,6 +134,37 @@ export default function RegisterScreen() {
                 />
               )}
             />
+
+            <View className="gap-2">
+              <FieldLabel label="البريد الإلكتروني" />
+              <FieldRow className={form.formState.errors.email ? 'border-destructive' : undefined}>
+                <Controller
+                  control={form.control}
+                  name="email"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      className="text-foreground h-14 flex-1 border-0 bg-transparent text-right text-lg leading-7 shadow-none"
+                      style={{ writingDirection: 'ltr' }}
+                      placeholder="example@email.com"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                    />
+                  )}
+                />
+              </FieldRow>
+              {form.formState.errors.email ? (
+                <Text
+                  className="text-destructive text-xs"
+                  style={{ fontFamily: 'app-font-regular' }}
+                >
+                  {form.formState.errors.email.message}
+                </Text>
+              ) : null}
+            </View>
 
             <Controller
               control={form.control}

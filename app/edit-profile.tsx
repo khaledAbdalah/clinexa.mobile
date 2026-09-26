@@ -24,6 +24,8 @@ export default function EditProfileScreen() {
     isLoading,
     fullName,
     setFullName,
+    email,
+    setEmail,
     gender,
     setGender,
     dayText,
@@ -87,6 +89,22 @@ export default function EditProfileScreen() {
                 placeholder="أدخل اسمك بالكامل"
                 value={fullName}
                 onChangeText={setFullName}
+              />
+            </FieldRow>
+          </View>
+
+          <View className="gap-2">
+            <FieldLabel label="البريد الإلكتروني" />
+            <FieldRow>
+              <Input
+                className="text-foreground h-14 flex-1 border-0 bg-transparent text-right text-lg leading-7 shadow-none"
+                style={{ writingDirection: 'ltr' }}
+                placeholder="example@email.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                value={email}
+                onChangeText={setEmail}
               />
             </FieldRow>
           </View>

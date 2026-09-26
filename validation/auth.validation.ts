@@ -10,10 +10,16 @@ const passwordSchema = z
   .min(8, 'كلمة المرور يجب أن تكون 8 أحرف على الأقل')
   .max(32, 'كلمة المرور يجب ألا تتجاوز 32 حرفًا');
 
+const emailSchema = z
+  .string()
+  .min(1, 'البريد الإلكتروني مطلوب')
+  .email('البريد الإلكتروني غير صحيح');
+
 export const signupSchema = z
   .object({
     fullName: z.string().min(1, 'الاسم بالكامل مطلوب'),
     phone: phoneSchema,
+    email: emailSchema,
     password: passwordSchema,
     passwordConfirmation: passwordSchema,
   })

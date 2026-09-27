@@ -55,6 +55,7 @@ export function useEditProfile() {
   const initialized = useRef(false);
 
   const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [gender, setGender] = useState<Gender | null>(null);
   const [dayText, setDayText] = useState('01');
   const [monthIndex, setMonthIndex] = useState(0);
@@ -73,6 +74,7 @@ export function useEditProfile() {
     initialized.current = true;
 
     setFullName(patient.fullName);
+    setEmail(patient.email ?? '');
     setGender(patient.gender);
     const parsedDate = parseDateOfBirth(patient.dateOfBirth);
     setDayText(String(parsedDate.day).padStart(2, '0'));
@@ -118,6 +120,7 @@ export function useEditProfile() {
 
     const payload: UpdatePatientProfileRequest = {};
     if (fullName.trim() && fullName !== patient.fullName) payload.fullName = fullName;
+    if (email.trim() && email !== (patient.email ?? '')) payload.email = email;
     if (gender && gender !== patient.gender) payload.gender = gender;
     if (dateOfBirth !== patient.dateOfBirth) payload.dateOfBirth = dateOfBirth;
     if (address !== (patient.address ?? '')) payload.address = address;
@@ -143,6 +146,8 @@ export function useEditProfile() {
     isLoading,
     fullName,
     setFullName,
+    email,
+    setEmail,
     gender,
     setGender,
     dayText,

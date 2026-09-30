@@ -128,6 +128,14 @@ export default function RegisterScreen() {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   errorMessage={fieldState.error?.message}
+                  hint={
+                    <Text
+                      className="text-muted-foreground text-xs"
+                      style={{ fontFamily: 'app-font-regular' }}
+                    >
+                      لازم الرقم يكون مسجّل على واتساب، هنبعتلك عليه كود التأكيد
+                    </Text>
+                  }
                 />
               )}
             />

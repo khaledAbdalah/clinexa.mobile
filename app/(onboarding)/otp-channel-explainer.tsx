@@ -68,13 +68,13 @@ export default function OtpChannelExplainerScreen() {
           className="text-foreground mt-8 text-center text-3xl"
           style={{ fontFamily: 'app-font-bold' }}
         >
-          هنتأكد من رقمك
+          هنتأكد من حسابك
         </Text>
         <Text
           className="text-muted-foreground mt-3 text-center text-base leading-7"
           style={{ fontFamily: 'app-font-regular' }}
         >
-          هنبعتلك كود التحقق للتأكيد من رقمك
+          هنبعتلك كود التحقق على الواتساب أو الإيميل للتأكد من حسابك
         </Text>
       </View>
 

@@ -26,10 +26,15 @@ export default function OtpChannelExplainerScreen() {
     requestOtp.mutate(
       { phone, purpose: 'signup_verify' },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           router.push({
             pathname: routes.otpVerification,
-            params: { phone, purpose: 'signup_verify' },
+            params: {
+              phone,
+              purpose: 'signup_verify',
+              ...(response.channel && { channel: response.channel }),
+              ...(response.maskedEmail && { maskedEmail: response.maskedEmail }),
+            },
           });
         },
       }

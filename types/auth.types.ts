@@ -26,6 +26,17 @@ export interface SignupRequest {
 
 export type OtpPurpose = 'signup_verify' | 'password_reset';
 
+/** Where the backend delivered the OTP — a per-clinic setting, reported back on each request. */
+export type OtpChannel = 'whatsapp' | 'email';
+
+export interface OtpRequestResponse {
+  message: string;
+  /** Absent for password-reset requests on unknown phones (the API hides whether an account exists). */
+  channel?: OtpChannel;
+  /** e.g. "a***@gmail.com", only when `channel` is 'email'. */
+  maskedEmail?: string | null;
+}
+
 export interface OtpRequestBody {
   phone: string;
   purpose: OtpPurpose;

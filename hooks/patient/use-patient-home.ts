@@ -10,7 +10,9 @@ export interface PatientHomeScreenData {
   services: Service[];
 }
 
-async function fetchPatientHomeScreen(): Promise<PatientHomeScreenData> {
+export const PATIENT_HOME_QUERY_KEY = ['patient', 'home-screen'] as const;
+
+export async function fetchPatientHomeScreen(): Promise<PatientHomeScreenData> {
   const [homeRes, unreadRes, servicesRes] = await Promise.allSettled([
     api.get<{ data: PatientHome }>(endpoints.patient.home),
     api.get<{ data: { count: number } }>(endpoints.notifications.unreadCount),
@@ -30,7 +32,7 @@ async function fetchPatientHomeScreen(): Promise<PatientHomeScreenData> {
 
 export function usePatientHomeScreen(enabled = true) {
   return useDetailQuery<PatientHomeScreenData>({
-    queryKey: ['patient', 'home-screen'],
+    queryKey: PATIENT_HOME_QUERY_KEY,
     queryFn: fetchPatientHomeScreen,
     enabled,
   });

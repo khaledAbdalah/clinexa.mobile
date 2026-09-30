@@ -32,10 +32,15 @@ export default function ForgotPasswordScreen() {
     mutate(
       { phone: data.phone, purpose: 'password_reset' },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           router.push({
             pathname: routes.otpVerification,
-            params: { phone: data.phone, purpose: 'password_reset' },
+            params: {
+              phone: data.phone,
+              purpose: 'password_reset',
+              ...(response.channel && { channel: response.channel }),
+              ...(response.maskedEmail && { maskedEmail: response.maskedEmail }),
+            },
           });
         },
       }

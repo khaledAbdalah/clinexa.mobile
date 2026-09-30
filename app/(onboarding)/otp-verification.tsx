@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { ChevronLeft, Clock } from 'lucide-react-native';
+import { ChevronLeft, Clock, Mail, ShieldCheck } from 'lucide-react-native';
 import { Controller } from 'react-hook-form';
 import { Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -26,6 +26,8 @@ export default function OtpVerificationScreen() {
     isConfirmDisabled,
     isVerifying,
     isPasswordReset,
+    channel,
+    maskedEmail,
     passwordForm,
   } = useOtpVerification();
 
@@ -45,24 +47,59 @@ export default function OtpVerificationScreen() {
           </View>
 
           <View className="items-center">
-            <Image
-              source={require('@/assets/images/whatsapp-icon.png')}
-              style={{ width: 96, height: 96 }}
-              contentFit="contain"
-            />
+            {channel === 'whatsapp' ? (
+              <Image
+                source={require('@/assets/images/whatsapp-icon.png')}
+                style={{ width: 96, height: 96 }}
+                contentFit="contain"
+              />
+            ) : (
+              <View className="bg-primary/10 h-24 w-24 items-center justify-center rounded-full">
+                <Icon
+                  as={channel === 'email' ? Mail : ShieldCheck}
+                  size={44}
+                  className="text-primary"
+                />
+              </View>
+            )}
 
             <Text
               className="text-foreground mt-6 text-center text-2xl"
               style={{ fontFamily: 'app-font-bold' }}
             >
-              التحقق من رقم الهاتف
+              {channel === 'email'
+                ? 'افتح إيميلك'
+                : channel === 'whatsapp'
+                  ? 'افتح واتساب'
+                  : 'أدخل كود التحقق'}
             </Text>
             <Text
-              className="text-muted-foreground mt-2 text-center text-base"
+              className="text-muted-foreground mt-2 text-center text-base leading-7"
               style={{ fontFamily: 'app-font-regular' }}
             >
-              أدخل الكود المكون من 6 أرقام
+              {channel === 'email'
+                ? 'الكود جاي لك في ثواني! بعتنالك كود من 6 أرقام على الإيميل'
+                : channel === 'whatsapp'
+                  ? 'بعتنالك كود من 6 أرقام على واتساب'
+                  : 'أدخل الكود المكوّن من 6 أرقام اللي وصلك'}
             </Text>
+            {channel === 'email' && maskedEmail ? (
+              <Text
+                latinDigits
+                className="text-foreground mt-1 text-center text-base"
+                style={{ fontFamily: 'app-font-semibold', writingDirection: 'ltr' }}
+              >
+                {maskedEmail}
+              </Text>
+            ) : null}
+            {channel === 'email' ? (
+              <Text
+                className="text-muted-foreground mt-2 text-center text-sm leading-6"
+                style={{ fontFamily: 'app-font-regular' }}
+              >
+                لو مالقيتوش في الوارد، دوّر في فولدر الرسائل غير المرغوبة (Spam)
+              </Text>
+            ) : null}
 
             <View className="mt-8 w-full">
               <OtpInput value={code} onChangeText={setCode} autoFocus />

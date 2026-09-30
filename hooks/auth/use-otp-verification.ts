@@ -7,7 +7,7 @@ import { useRequestOtp } from '@/hooks/auth/use-request-otp';
 import { useVerifyOtp } from '@/hooks/auth/use-verify-otp';
 import { getPostAuthRoute } from '@/lib/post-auth-route';
 import { useAuthStore } from '@/store/auth';
-import type { OtpPurpose } from '@/types/auth.types';
+import type { OtpChannel, OtpPurpose } from '@/types/auth.types';
 import {
   resetPasswordFieldsSchema,
   type ResetPasswordFieldsInput,
@@ -23,7 +23,18 @@ export function formatCountdown(totalSeconds: number) {
 
 /** Countdown, resend, and code-verification logic for the OTP screen (signup or password reset). */
 export function useOtpVerification() {
-  const { phone, purpose } = useLocalSearchParams<{ phone: string; purpose: OtpPurpose }>();
+  const params = useLocalSearchParams<{
+    phone: string;
+    purpose: OtpPurpose;
+    channel?: OtpChannel;
+    maskedEmail?: string;
+  }>();
+  const { phone, purpose } = params;
+  // Seeded from the request that opened this screen; refreshed on resend in case the clinic switched channels.
+  const [delivery, setDelivery] = useState<{ channel?: OtpChannel; maskedEmail?: string | null }>({
+    channel: params.channel,
+    maskedEmail: params.maskedEmail,
+  });
   const [code, setCode] = useState('');
   const [secondsLeft, setSecondsLeft] = useState(RESEND_COOLDOWN_SECONDS);
 
@@ -52,7 +63,13 @@ export function useOtpVerification() {
 
   const handleResend = () => {
     if (!canResend) return;
-    requestOtp.mutate({ phone, purpose });
+    requestOtp.mutate(
+      { phone, purpose },
+      {
+        onSuccess: (response) =>
+          setDelivery({ channel: response.channel, maskedEmail: response.maskedEmail }),
+      }
+    );
     setSecondsLeft(RESEND_COOLDOWN_SECONDS);
   };
 
@@ -105,6 +122,8 @@ export function useOtpVerification() {
     isConfirmDisabled,
     isVerifying: verifyOtp.isPending,
     isPasswordReset,
+    channel: delivery.channel,
+    maskedEmail: delivery.maskedEmail,
     passwordForm: { control },
   };
 }

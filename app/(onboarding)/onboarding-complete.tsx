@@ -1,9 +1,12 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { queryClient } from '@/config/react-query';
 import { routes } from '@/constants/routes';
+import { fetchPatientHomeScreen, PATIENT_HOME_QUERY_KEY } from '@/hooks/patient/use-patient-home';
 import { PillButton } from '@/components/ui/pill-button';
 import { Text } from '@/components/ui/text';
 
@@ -14,6 +17,19 @@ export default function OnboardingCompleteScreen() {
   const { width: screenWidth } = useWindowDimensions();
   const illustrationWidth = screenWidth * 0.7;
   const { patientNumber } = useLocalSearchParams<{ patientNumber: string }>();
+  const [isStarting, setIsStarting] = useState(false);
+
+  // The splash is long gone by now, so warm the home cache first — otherwise home opens on its skeleton.
+  // `prefetchQuery` swallows errors, so a failed load just falls back to home's own loading/error state.
+  const handleStart = async () => {
+    setIsStarting(true);
+    await queryClient.prefetchQuery({
+      queryKey: PATIENT_HOME_QUERY_KEY,
+      queryFn: fetchPatientHomeScreen,
+      staleTime: 1000 * 60 * 5,
+    });
+    router.replace(routes.tabsHome);
+  };
 
   return (
     <View className="bg-background flex-1">
@@ -73,7 +89,8 @@ export default function OnboardingCompleteScreen() {
             label="ابدأ"
             variant="solid"
             size="lg"
-            onPress={() => router.replace(routes.tabsHome)}
+            isLoading={isStarting}
+            onPress={handleStart}
           />
         </View>
       </View>

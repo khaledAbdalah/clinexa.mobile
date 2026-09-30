@@ -15,7 +15,10 @@ export function useHomeDataBootstrap(enabled: boolean) {
 
     const { isAuthenticated, status } = useAuthStore.getState();
     const headedToHome =
-      isAuthenticated && status !== 'needs_verification' && status !== 'needs_onboarding';
+      isAuthenticated &&
+      status !== 'needs_phone' &&
+      status !== 'needs_verification' &&
+      status !== 'needs_onboarding';
 
     if (!headedToHome) {
       setSkip(true);

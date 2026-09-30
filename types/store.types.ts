@@ -8,7 +8,7 @@ import type { User } from './auth.types';
  * failed) — callers should treat that the same as 'ready' to avoid trapping
  * a legitimately authenticated user behind a network blip.
  */
-export type AuthStatus = 'needs_verification' | 'needs_onboarding' | 'ready';
+export type AuthStatus = 'needs_phone' | 'needs_verification' | 'needs_onboarding' | 'ready';
 
 export interface AuthState {
   user: User | null;

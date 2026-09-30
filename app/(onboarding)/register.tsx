@@ -66,7 +66,7 @@ export default function RegisterScreen() {
       <View className="flex-1" style={{ paddingTop: insets.top }}>
         <KeyboardAwareScrollView
           bottomOffset={120}
-          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 32 }}
+          contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: insets.bottom + 16 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -82,13 +82,13 @@ export default function RegisterScreen() {
             </Text>
           </View>
           <Text
-            className="text-muted-foreground mt-2 text-lg"
+            className="text-muted-foreground mt-1 text-base"
             style={{ fontFamily: 'app-font-regular' }}
           >
             للاستمرار، املأ بياناتك بكل دقة
           </Text>
 
-          <View className="mt-8 gap-6">
+          <View className="mt-5 gap-3.5">
             <View className="gap-2">
               <FieldLabel label="الاسم بالكامل" />
               <FieldRow
@@ -197,7 +197,7 @@ export default function RegisterScreen() {
           <PillButton
             variant="solid"
             label="إنشاء الحساب"
-            className="mt-8"
+            className="mt-5"
             isLoading={isPending}
             onPress={onSubmit}
           />

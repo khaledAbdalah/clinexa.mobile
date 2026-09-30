@@ -41,6 +41,7 @@ export function PhoneField({
             <Text
               className="text-foreground py-3 text-lg"
               style={{ fontFamily: 'app-font-semibold' }}
+              latinDigits
             >
               {COUNTRY_CODE}
             </Text>

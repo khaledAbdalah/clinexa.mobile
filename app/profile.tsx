@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { History, KeyRound, MapPin, Trash2, User } from 'lucide-react-native';
+import { Flag, History, KeyRound, MapPin, Trash2, User } from 'lucide-react-native';
 import { useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -52,7 +52,7 @@ export default function ProfileScreen() {
           <ProfileHeaderCard
             fullName={user.fullName}
             initials={initials(user.fullName) ?? '؟'}
-            phone={user.phone}
+            phone={user.phone ?? ''}
           />
           {patient && <PatientCodeCard patientNumber={patient.patientNumber} />}
 
@@ -76,6 +76,11 @@ export default function ProfileScreen() {
               icon={MapPin}
               label="معلومات العيادة"
               onPress={() => router.push(routes.clinicInfo)}
+            />
+            <ProfileMenuRow
+              icon={Flag}
+              label="الإبلاغ عن مشكلة"
+              onPress={() => router.push(routes.reportProblem)}
             />
           </View>
 

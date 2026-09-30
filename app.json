@@ -31,14 +31,23 @@
           "hidden": true
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "يحتاج التطبيق للوصول إلى الصور لإرفاقها في بلاغ المشكلة."
+        }
+      ],
+      "@react-native-google-signin/google-signin",
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "ios": {
-      "bundleIdentifier": "com.clinexa.mobile"
+      "bundleIdentifier": "com.clinexa.mobile",
+      "usesAppleSignIn": true
     }
   }
 }

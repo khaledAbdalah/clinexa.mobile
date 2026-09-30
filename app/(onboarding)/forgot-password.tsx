@@ -2,14 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Keyboard, Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { routes } from '@/constants/routes';
-import { SupportContactCard } from '@/components/onboarding/support-contact-card';
 import { Icon } from '@/components/ui/icon';
 import { PhoneField } from '@/components/ui/phone-field';
 import { PillButton } from '@/components/ui/pill-button';
@@ -19,7 +17,6 @@ import { forgotPasswordSchema, type ForgotPasswordInput } from '@/validation/aut
 
 export default function ForgotPasswordScreen() {
   const insets = useSafeAreaInsets();
-  const [isOtpDisabled, setIsOtpDisabled] = useState(false);
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -28,7 +25,6 @@ export default function ForgotPasswordScreen() {
 
   const { mutate, isPending } = useRequestOtp({
     setError: form.setError,
-    onOtpDisabled: () => setIsOtpDisabled(true),
   });
 
   const onSubmit = form.handleSubmit((data) => {
@@ -86,34 +82,28 @@ export default function ForgotPasswordScreen() {
             أدخل رقم هاتفك وهنبعتلك رمز التحقق لإعادة تعيين كلمة المرور
           </Text>
 
-          {isOtpDisabled ? (
-            <SupportContactCard />
-          ) : (
-            <>
-              <View className="mt-8 gap-6">
-                <Controller
-                  control={form.control}
-                  name="phone"
-                  render={({ field: { onChange, onBlur, value }, fieldState }) => (
-                    <PhoneField
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      errorMessage={fieldState.error?.message}
-                    />
-                  )}
+          <View className="mt-8 gap-6">
+            <Controller
+              control={form.control}
+              name="phone"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <PhoneField
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  errorMessage={fieldState.error?.message}
                 />
-              </View>
+              )}
+            />
+          </View>
 
-              <PillButton
-                variant="solid"
-                label="إرسال رمز التحقق"
-                className="mt-8"
-                isLoading={isPending}
-                onPress={onSubmit}
-              />
-            </>
-          )}
+          <PillButton
+            variant="solid"
+            label="إرسال رمز التحقق"
+            className="mt-8"
+            isLoading={isPending}
+            onPress={onSubmit}
+          />
 
           <View className="mt-4 flex-row items-center justify-center gap-1">
             <Pressable onPress={() => router.replace(routes.login)}>

@@ -66,6 +66,11 @@ export default function HomeScreen() {
         <HomeScreenSkeleton />
       ) : (
         <>
+          {/* No upcoming booking: the book-an-appointment prompt goes first. */}
+          {!queues.length && lastVisit ? <ReturningPatientCard lastVisit={lastVisit} /> : null}
+
+          {!queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
+
           {queues.length ? <QueueCarousel queues={queues} /> : null}
 
           <EmptyHomeServicesCarousel services={services} />
@@ -87,10 +92,6 @@ export default function HomeScreen() {
               doctorSpecialty={lastVisit.doctorSpecialty}
             />
           ) : null}
-
-          {!queues.length && lastVisit ? <ReturningPatientCard lastVisit={lastVisit} /> : null}
-
-          {!queues.length && !lastVisit ? <EmptyAppointmentsCard /> : null}
 
           <HomeClinicSections />
         </>

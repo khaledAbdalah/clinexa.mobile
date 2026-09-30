@@ -9,6 +9,7 @@ import { routes } from '@/constants/routes';
 import { openExternalUrl } from '@/lib/open-url';
 import { useMarkEntryResolved } from '@/hooks/use-mark-entry-resolved';
 import { useToast } from '@/hooks/use-toast';
+import { SocialLoginButtons } from '@/components/onboarding/social-login-buttons';
 import { Icon } from '@/components/ui/icon';
 import { PillButton } from '@/components/ui/pill-button';
 import { Text } from '@/components/ui/text';
@@ -56,7 +57,7 @@ export default function WelcomeScreen() {
             className="text-foreground text-center text-3xl"
             style={{ fontFamily: 'app-font-bold' }}
           >
-            عيادتك في جيبك
+            احجز وتابع حالتك بسهولة
           </Text>
           <Text
             className="text-muted-foreground text-center text-base leading-7"
@@ -69,16 +70,14 @@ export default function WelcomeScreen() {
         <View className="mt-12 gap-3 px-6">
           {/* Extra inset keeps the CTAs narrower than the legal copy below them. */}
           <View className="gap-3 px-4">
-            <PillButton
-              onPress={() => router.push(routes.register)}
-              label="إنشاء حساب جديد"
-              variant="solid"
-            />
+            <SocialLoginButtons showDivider={false} />
 
             <PillButton
               onPress={() => router.push(routes.login)}
-              label="عندي حساب بالفعل"
-              variant="outline"
+              label="المتابعة برقم الهاتف أو الإيميل"
+              variant="solid"
+              icon={null}
+              className="justify-center"
             />
           </View>
 

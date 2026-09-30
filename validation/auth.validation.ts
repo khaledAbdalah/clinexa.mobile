@@ -42,3 +42,9 @@ export const forgotPasswordSchema = z.object({
 });
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const addPhoneSchema = z.object({
+  phone: phoneSchema,
+});
+
+export type AddPhoneInput = z.infer<typeof addPhoneSchema>;

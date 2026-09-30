@@ -1,7 +1,8 @@
 export interface User {
   id: string;
   fullName: string;
-  phone: string;
+  /** Null for a social (Google/Apple) signup until the user adds one. */
+  phone: string | null;
   email: string;
   initials: string;
   isPhoneVerified: boolean;
@@ -47,6 +48,16 @@ export interface AuthResponse {
     /** True when this login reactivated a temporarily-deleted account. */
     restored?: boolean;
   };
+}
+
+export interface AddPhoneRequest {
+  phone: string;
+}
+
+export interface AppleLoginRequest {
+  identityToken: string;
+  /** Apple only supplies the name on the very first authorization. */
+  fullName?: string;
 }
 
 export interface ApiError {

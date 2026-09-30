@@ -5,9 +5,12 @@ export const endpoints = {
     refresh: '/auth/refresh',
     otpRequest: '/auth/otp/request',
     otpVerify: '/auth/otp/verify',
+    google: '/auth/google',
+    apple: '/auth/apple',
   },
   account: {
     profile: '/account/profile',
+    phone: '/account/phone',
     logout: '/account/logout',
     pushTokens: '/account/push-tokens',
     changePassword: '/account/change-password',
@@ -41,4 +44,5 @@ export const endpoints = {
   },
   settings: '/settings',
   checkAuth: '/check-auth',
+  problemReports: '/problem-reports',
 };

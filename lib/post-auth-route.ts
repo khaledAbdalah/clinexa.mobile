@@ -11,7 +11,11 @@ import type { AuthStatus } from '@/types/store.types';
  * a network blip doesn't trap an otherwise-legitimate session.
  */
 export function getPostAuthRoute(status: AuthStatus | null, user: User | null): Href {
-  if (status === 'needs_verification' && user) {
+  if (status === 'needs_phone') {
+    return routes.addPhone;
+  }
+
+  if (status === 'needs_verification' && user?.phone) {
     return { pathname: routes.otpChannelExplainer, params: { phone: user.phone } };
   }
 

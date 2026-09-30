@@ -14,6 +14,9 @@ import type { User } from '@/types/auth.types';
 // bootstrap timeout on a slow connection, occasionally landing on the tab
 // bar before the second call had resolved).
 function resolveAuthStatus(user: User): AuthStatus {
+  // Social (Google/Apple) signups start without a phone; OTP verification and
+  // the rest of the funnel are keyed on it, so it has to come first.
+  if (!user.phone) return 'needs_phone';
   if (!user.isPhoneVerified) return 'needs_verification';
   if (!user.isOnboardingComplete) return 'needs_onboarding';
   return 'ready';

@@ -11,6 +11,10 @@ export class SettingKeys {
   static readonly MAINTENANCE_MODE_ENABLED = 'maintenance_mode_enabled';
   static readonly TIMEZONE = 'timezone';
 
+  // Auth
+  /** When true, fresh signups come back already verified (`user.isPhoneVerified`), skipping OTP. */
+  static readonly WITHOUT_VERIFY = 'without_verify';
+
   // Contact
   static readonly CLINIC_ADDRESS = 'clinic_address';
   static readonly CLINIC_MAPS_URL = 'clinic_maps_url';

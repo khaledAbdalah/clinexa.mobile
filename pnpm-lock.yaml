@@ -240,6 +240,9 @@ importers:
       autoprefixer:
         specifier: ^10.6.1
         version: 10.6.1(postcss@8.5.26)
+      babel-preset-expo:
+        specifier: ~57.0.6
+        version: 57.0.6(@babel/core@7.29.7)(@babel/runtime@7.29.7)(expo@57.0.12)(react-refresh@0.14.2)
       eslint:
         specifier: ^9.39.1
         version: 9.39.5(jiti@1.21.7)
@@ -8192,7 +8195,7 @@ snapshots:
 
   core-js-compat@3.50.0:
     dependencies:
-      browserslist: 4.28.8
+      browserslist: 4.29.0
 
   cross-fetch@3.2.0:
     dependencies:
